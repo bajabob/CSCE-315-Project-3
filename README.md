@@ -5,4 +5,4 @@
 * Samuel Cimino - samuelcimino@email.tamu.edu
 * Ben Whitley - benwhitley92@email.tamu.edu
 
-(Project #3)[http://faculty.cse.tamu.edu/ritchey/courses/csce315/spring15/homework/project3.pdf]
+[Project #3 Link](http://faculty.cse.tamu.edu/ritchey/courses/csce315/spring15/homework/project3.pdf)
