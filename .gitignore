@@ -6,3 +6,5 @@
 .build
 /Debug/
 Thumbs.db
+/bin/
+.classpath
