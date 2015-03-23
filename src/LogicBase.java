@@ -10,5 +10,10 @@ public class LogicBase
 		this.inputB = inputB;
 		this.output = output;
 	}
+	
+	public LogicBase( int inputA, int output){
+		this.inputA = inputA;
+		this.inputB = inputB;
+	}
 
 }
