@@ -17,6 +17,7 @@ public class Circuit {
 		gates.add(new LogicBase(LogicBase.GATE_AND, 0, 3, 4));
 		gates.add(new LogicBase(LogicBase.GATE_AND, 1, 2, 5));
 		gates.add(new LogicBase(LogicBase.GATE_OR, 4, 5, 6));
+		System.out.println(gates.get(0));
 	}
 	
 	void evaluate( boolean[] inputs )

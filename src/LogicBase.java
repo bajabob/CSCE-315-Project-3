@@ -56,4 +56,13 @@ public class LogicBase
 			outputs.add(output, out);
 		}*/
 	}
+	
+	@Override
+	public String toString(){
+		String response = "Output: " + output + " "
+			 + "Gate : " +  gate + " " + "InputA: " +
+			 inputA + " "+ "InputA: "  + inputB;
+		return response;
+	}
+
 }
