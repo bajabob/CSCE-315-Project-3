@@ -12,7 +12,8 @@ public class LogicBase
 	protected int inputA, inputB;
 
 	protected int output;
-
+	
+	
 	public LogicBase( String gate, int inputA, int inputB, int output )
 	{
 		this.gate = gate;
@@ -27,7 +28,11 @@ public class LogicBase
 		this.inputA = inputA;
 		this.output = output;
 	}
-
+	
+	public String getGate()
+	{
+		return gate;
+	}
 	void evaluate(ArrayList<Boolean> outputs)
 	{
 		if (gate == GATE_AND)
@@ -58,10 +63,16 @@ public class LogicBase
 	}
 	
 	@Override
-	public String toString(){
+	public String toString()
+	{
 		String response = "Output: " + output + " "
-			 + "Gate : " +  gate + " " + "InputA: " +
-			 inputA + " "+ "InputA: "  + inputB;
+			 + "Gate : " +  gate + " " + " InputA: " +
+			 inputA + " ";
+			
+		if(gate != GATE_NOT)
+		{
+			response += "InputB : " + inputB;
+		}
 		return response;
 	}
 
