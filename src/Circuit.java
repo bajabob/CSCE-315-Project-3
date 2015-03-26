@@ -103,7 +103,7 @@ public class Circuit {
 		try
 		{
 			writer = new PrintWriter(filename+".txt", "UTF-8");
-			for(int i = gates.size() - 1; i >= 0 ; --i ) {
+			for(int i = 0; i < gates.size(); ++i ) {
 				writer.println(gates.get( i ).toFileFormat());
 			}
 			writer.close();
@@ -128,7 +128,7 @@ public class Circuit {
 				String[] split = currentLine.split("\t");
 				LogicBase gate = new LogicBase( split[1], Integer.valueOf( split[2]), 
 						Integer.valueOf(split[3]), Integer.valueOf(split[0]) );
-				this.addGateEnd( gate );
+				this.addGateFront( gate );
 			}
  
 			br.close();
@@ -191,10 +191,11 @@ public class Circuit {
 				System.out.println("Test passed for truth table row: "+test);
 				
 				String s = "Output\tGate\n";
-				for(int i = 0; i < gates.size(); i++){
+				for(int i = gates.size() - 1; i >= 0; i--){
 					s += testResults.get(i) + "\t" + gates.get( i ) + "\n";
 				}
 				System.out.println(s);
+				System.out.println(this);
 				this.save( "test" );
 			}
 		}
@@ -209,7 +210,7 @@ public class Circuit {
 	public String toString()
 	{
 		String response = "";
-		for(int i = 0; i < gates.size(); i++)
+		for(int i = gates.size() - 1; i >= 0; i--)
 		{
 			response += gates.get(i) + "\n";
 		}
