@@ -7,13 +7,28 @@ public class LogicBase
 	public static final String GATE_NOT = "not";
 	public static final String GATE_OR = "or";
 
+	/**
+	 * The type of gate this is
+	 */
 	protected String gate;
 	
+	/**
+	 * The inputs for this gate
+	 */
 	protected int inputA, inputB;
 
+	/**
+	 * The line this gate outputs to
+	 */
 	protected int output;
 	
-	
+	/**
+	 * Create a new logic base gate
+	 * @param gate - the type of gate
+	 * @param inputA - the output line to take an input from
+	 * @param inputB - the output line to take an input from
+	 * @param output - the line this gate outputs to
+	 */
 	public LogicBase( String gate, int inputA, int inputB, int output )
 	{
 		this.gate = gate;
@@ -22,6 +37,12 @@ public class LogicBase
 		this.output = output;
 	}
 	
+	/**
+	 * Create a new logic base gate
+	 * @param gate - the type of gate
+	 * @param inputA - the output line to take an input from
+	 * @param output - the line this gate outputs to
+	 */
 	public LogicBase( String gate, int inputA, int output)
 	{
 		this.gate = gate;
@@ -29,10 +50,21 @@ public class LogicBase
 		this.output = output;
 	}
 	
+	/**
+	 * Get this gate
+	 * @return LogicBase
+	 */
 	public String getGate()
 	{
 		return gate;
 	}
+	
+	/**
+	 * Evaluate this gate against an already generated list of 
+	 *  outputs (IE all outputs preceeding this gate have been
+	 *  calculated)
+	 * @param outputs ArrayList<Boolean>
+	 */
 	void evaluate(ArrayList<Boolean> outputs)
 	{
 		if (gate == GATE_AND)
@@ -53,25 +85,19 @@ public class LogicBase
 			boolean out = !A;
 			outputs.add(out);
 		}
-		
-		/*else if (gate == GATE_NONE)
-		{
-			boolean A = outputs.get(inputA);
-			boolean out = A;
-			outputs.add(output, out);
-		}*/
+
 	}
 	
 	@Override
 	public String toString()
 	{
-		String response = "Output: " + output + " "
-			 + "Gate : " +  gate + " " + " InputA: " +
+		String response = "\t" + output + "\t"
+			 + gate.toUpperCase() + "\t" + " " +
 			 inputA + " ";
 			
 		if(gate != GATE_NOT)
 		{
-			response += "InputB : " + inputB;
+			response += inputB;
 		}
 		return response;
 	}

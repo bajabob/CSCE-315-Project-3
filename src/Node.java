@@ -20,6 +20,10 @@ public class Node<T> {
     	return this.parent;
     }
     
+    public T getData(){
+    	return this.data;
+    }
+    
     public void addChild(Node<T> node){
     	this.children.add(node);
     }

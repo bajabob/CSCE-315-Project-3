@@ -1,32 +1,53 @@
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Stack;
 
 public class Circuit {
 	
+	/**
+	 * Total number of individual gates in this circuit
+	 */
 	private int counterAnd;
 	private int counterOr;
 	private int counterNot;
+	private int counterNone;
 	
-	private ArrayList<Boolean> outputs;
-	
-	private ArrayList<LogicBase> gates;
+	/**
+	 * Collection of gates in linear order
+	 */
+	private Stack<LogicBase> gates;
 	
 	public Circuit()
 	{
-		outputs = new ArrayList<Boolean>();
-		gates = new ArrayList<LogicBase>();
-		
-		
+		gates = new Stack<LogicBase>();
 	}
-	
-	void updateGate(LogicBase gate, int index)
+
+	/**
+	 * Add a gate to the end of this circuit
+	 * @param gate
+	 */
+	void addGateEnd(LogicBase gate)
 	{
-		gates.set(index, gate);
-	}
-	
-	void addGate(LogicBase gate)
-	{
-		
 		gates.add(gate);
+		this.countGate(gate);
+	}
+	
+	/**
+	 * Add a gate to the front of this circuit
+	 * @param gate
+	 */
+	void addGateFront(LogicBase gate)
+	{
+		gates.push(gate);
+		this.countGate(gate);
+	}
+	
+	
+	/**
+	 * Increment the local gate count
+	 * @param gate
+	 */
+	private void countGate(LogicBase gate){
 		if(gate.getGate() == LogicBase.GATE_AND)
 		{
 			counterAnd++;
@@ -42,40 +63,81 @@ public class Circuit {
 			counterNot++;
 		}
 		
+		if(gate.getGate() == LogicBase.GATE_NONE)
+		{
+			counterNone++;
+		}
 	}
 	
+	/**
+	 * Get this circuit's current fitness score
+	 * @return int
+	 */
 	int getFitnessScore()
 	{
 		return counterNot * 10000 + 10 * (counterAnd + counterOr);
 		
 	}
 	
+	/**
+	 * Get the current number of gates in this circuit
+	 * @return int
+	 */
 	int getInputSize()
 	{
 		return gates.size();
 	}
 	
-	void evaluate( boolean[] inputs )
+	/**
+	 * Evaluate this circuit based off an array of inputs. The total number of 
+	 *  input should equal the total number of NONE gates at the beginning of 
+	 *  this circuit.
+	 * @param inputs boolean[]
+	 */
+	void evaluate( TruthTable tt )
 	{
-		System.out.println("EVALUATE");
-		outputs.clear();
-		
-		for( int i = 0; i < inputs.length; i++ )
-		{
-			outputs.add(inputs[i]);
+		if(tt.getTableWidth() != counterNone){
+			System.err.println("Circuit.evaluate :: Total number of NONE gates in circuit "
+					+ "does not equal number of inputs.");
+			return;
 		}
 		
-		for( int i = 0; i < gates.size(); i++ )
-		{
-			gates.get(i).evaluate(outputs);
+		boolean hasPassedTest = false;
+		ArrayList<Boolean> testResults = new ArrayList<Boolean>();
+		
+		for(int test = 0; test < tt.getRowCount(); test++ ){
+			// clear any old results
+			testResults.clear();
+		
+			// add inputs to beginning of test
+			for( int i = 0; i < tt.getTableWidth(); i++ )
+			{
+				testResults.add(tt.getInput(test, i));
+			}
+			
+			// evaluate the circuit
+			for( int i = gates.size()-1; i >= 0; i-- )
+			{
+				gates.get(i).evaluate(testResults);
+			}
+			
+			/**
+			 * Did our circuit pass for this row in the truth table?
+			 */
+			if(testResults.get(testResults.size()-1) == tt.getOutput(test)){
+				
+				// if a test passes, should we minimize the fitness score?
+				
+				hasPassedTest = true;
+				System.out.println("Test passed for truth table row: "+test);
+			}
 		}
 		
-		for( int i = 0; i < outputs.size(); i++ )
-		{
-			//System.out.println(";" + outputs.get(i));
+		if(hasPassedTest){
+			System.out.println(this);
+			System.out.println(tt);
 		}
-		
-		System.out.println(this);
+
 	}
 	
 	@Override
