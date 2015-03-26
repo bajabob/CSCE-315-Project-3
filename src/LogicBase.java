@@ -101,5 +101,13 @@ public class LogicBase
 		}
 		return response;
 	}
+	
+	/**
+	 * Convert this gate object to a file formatted friendly string
+	 * @return String
+	 */
+	public String toFileFormat(){
+		return output + "\t" + gate.toUpperCase() + "\t" + inputA + "\t" + inputB;
+	}
 
 }

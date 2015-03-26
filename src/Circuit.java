@@ -1,3 +1,9 @@
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Stack;
 
@@ -20,6 +26,16 @@ public class Circuit {
 	{
 		gates = new Stack<LogicBase>();
 	}
+	
+	/**
+	 * Load a circuit from disk
+	 * @param filename String
+	 */
+	public Circuit(String filename){
+		gates = new Stack<LogicBase>();
+		this.load( filename );
+	}
+	
 
 	/**
 	 * Add a gate to the end of this circuit
@@ -79,6 +95,50 @@ public class Circuit {
 	}
 	
 	/**
+	 * Save this circuit to disk
+	 * @param filename String
+	 */
+	void save(String filename){
+		PrintWriter writer;
+		try
+		{
+			writer = new PrintWriter(filename+".txt", "UTF-8");
+			for(int i = gates.size() - 1; i >= 0 ; --i ) {
+				writer.println(gates.get( i ).toFileFormat());
+			}
+			writer.close();
+		} catch ( FileNotFoundException | UnsupportedEncodingException e )
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Load a circuit from disk
+	 * @param filename String
+	 */
+	void load(String filename){
+		BufferedReader br = null;
+		try {
+			String currentLine;
+ 
+			br = new BufferedReader(new FileReader(filename+".txt"));
+ 
+			while ((currentLine = br.readLine()) != null) {
+				String[] split = currentLine.split("\t");
+				LogicBase gate = new LogicBase( split[1], Integer.valueOf( split[2]), 
+						Integer.valueOf(split[3]), Integer.valueOf(split[0]) );
+				this.addGateEnd( gate );
+			}
+ 
+			br.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} 
+	}
+	
+	
+	/**
 	 * Get the current number of gates in this circuit
 	 * @return int
 	 */
@@ -135,6 +195,7 @@ public class Circuit {
 					s += testResults.get(i) + "\t" + gates.get( i ) + "\n";
 				}
 				System.out.println(s);
+				this.save( "test" );
 			}
 		}
 		
