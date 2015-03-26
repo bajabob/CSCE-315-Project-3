@@ -36,16 +36,6 @@ public class Circuit {
 		this.load( filename );
 	}
 	
-
-	/**
-	 * Add a gate to the end of this circuit
-	 * @param gate
-	 */
-	void addGateEnd(LogicBase gate)
-	{
-		gates.add(gate);
-		this.countGate(gate);
-	}
 	
 	/**
 	 * Add a gate to the front of this circuit
@@ -103,7 +93,7 @@ public class Circuit {
 		try
 		{
 			writer = new PrintWriter(filename+".txt", "UTF-8");
-			for(int i = 0; i < gates.size(); ++i ) {
+			for(int i = gates.size() - 1; i >= 0; --i ) {
 				writer.println(gates.get( i ).toFileFormat());
 			}
 			writer.close();
@@ -124,13 +114,18 @@ public class Circuit {
  
 			br = new BufferedReader(new FileReader(filename+".txt"));
  
+			ArrayList<LogicBase> list =  new ArrayList<LogicBase>();
 			while ((currentLine = br.readLine()) != null) {
 				String[] split = currentLine.split("\t");
 				LogicBase gate = new LogicBase( split[1], Integer.valueOf( split[2]), 
 						Integer.valueOf(split[3]), Integer.valueOf(split[0]) );
-				this.addGateFront( gate );
+				list.add( gate );
 			}
  
+			for(int i = list.size() - 1; i >= 0 ; i--){
+				this.addGateFront( list.get( i ) );
+			}
+			
 			br.close();
 		} catch (IOException e) {
 			e.printStackTrace();

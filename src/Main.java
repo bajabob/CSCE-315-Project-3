@@ -13,6 +13,7 @@ public class Main {
 		// create a new circuit tree 
 		CircuitTree ct = new CircuitTree(carryOutTable, 10);
 		
+		testFileIO();
 	}
 	
 	/**
