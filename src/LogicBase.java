@@ -91,7 +91,7 @@ public class LogicBase
 	@Override
 	public String toString()
 	{
-		String response = "\t" + output + "\t"
+		String response = output + "\t"
 			 + gate.toUpperCase() + "\t" + " " +
 			 inputA + " ";
 			

@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Stack;
 
 public class Circuit {
@@ -130,11 +129,16 @@ public class Circuit {
 				
 				hasPassedTest = true;
 				System.out.println("Test passed for truth table row: "+test);
+				
+				String s = "Output\tGate\n";
+				for(int i = 0; i < gates.size(); i++){
+					s += testResults.get(i) + "\t" + gates.get( i ) + "\n";
+				}
+				System.out.println(s);
 			}
 		}
 		
 		if(hasPassedTest){
-			System.out.println(this);
 			System.out.println(tt);
 		}
 
