@@ -153,15 +153,19 @@ public class Circuit {
 	 *  this circuit.
 	 * @param inputs boolean[]
 	 */
-	void evaluate( TruthTable tt )
+	boolean evaluate( TruthTable tt )
 	{
 		if(tt.getTableWidth() != counterNone){
 			System.err.println("Circuit.evaluate :: Total number of NONE gates in circuit "
 					+ "does not equal number of inputs.");
-			return;
+			return false;
 		}
 		
-		boolean hasPassedTest = false;
+		// don't allow circuits with more than two nots
+		if(counterNot > 2){
+			return false;
+		}
+		
 		ArrayList<Boolean> testResults = new ArrayList<Boolean>();
 		
 		for(int test = 0; test < tt.getRowCount(); test++ ){
@@ -182,28 +186,36 @@ public class Circuit {
 			
 			/**
 			 * Did our circuit pass for this row in the truth table?
+			 * Compare test results for this row with the value in 
+			 *  the truth table
 			 */
 			if(testResults.get(testResults.size()-1) == tt.getOutput(test)){
 				
 				// if a test passes, should we minimize the fitness score?
 				
-				hasPassedTest = true;
 				System.out.println("Test passed for truth table row: "+test);
 				
 				String s = "Output\tGate\n";
 				for(int i = gates.size() - 1; i >= 0; i--){
 					s += testResults.get(i) + "\t" + gates.get( i ) + "\n";
 				}
-				System.out.println(s);
-				System.out.println(this);
-				this.save( "test" );
+				//System.out.println( s );
+				//System.out.println( tt );
+			}else{
+				return false;
 			}
 		}
 		
-		if(hasPassedTest){
-			System.out.println(tt);
-		}
+		this.save( tt.getName() + "-" + this.hashCode() );
+		
+		return true;
 
+	}
+	
+	@Override
+	public int hashCode(){
+		return this.gates.size() + counterAnd + counterNot + 
+				counterOr + getFitnessScore();
 	}
 	
 	@Override

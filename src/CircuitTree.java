@@ -1,5 +1,6 @@
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Random;
 
 
 public class CircuitTree {
@@ -64,8 +65,9 @@ public class CircuitTree {
 				//  in the future we may experiment with permutated 
 				//  gate inputs. This just makes the previous two
 				//  outputs these gates inputs
-				int inA = (tt.getTableWidth() + i) - 2;
-				int inB = (tt.getTableWidth() + i) - 1;
+				Random rand = new Random();
+				int inA = rand.nextInt(tt.getTableWidth() + i);
+				int inB = rand.nextInt(tt.getTableWidth() + i);
 				
 				// output is equal to i+number of GATE_NONE's added
 				//  before constructing the tree
@@ -90,9 +92,12 @@ public class CircuitTree {
 				
 				// @todo: here we should test the fitness of the circuit 
 				//  before attempting to evaluating it
-				c.evaluate(tt);
+				boolean foundCircuit = c.evaluate(tt);
 				
-				
+				if(foundCircuit){
+					System.out.println("Found valid circuit");
+					return;
+				}
 			}
 			System.out.println("");
 		}

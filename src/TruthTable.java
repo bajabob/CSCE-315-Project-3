@@ -89,6 +89,13 @@ public class TruthTable {
 		return this.output.size();
 	}
 	
+	/**
+	 * Get the name of this truth table
+	 * @return String
+	 */
+	public String getName(){
+		return name;
+	}
 	
 	@Override
 	public String toString(){

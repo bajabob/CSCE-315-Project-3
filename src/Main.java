@@ -11,7 +11,7 @@ public class Main {
 		System.out.println(carryOutTable);
 		
 		// create a new circuit tree 
-		CircuitTree ct = new CircuitTree(carryOutTable, 3);
+		CircuitTree ct = new CircuitTree(carryOutTable, 10);
 		
 	}
 	
