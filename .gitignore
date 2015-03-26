@@ -2,7 +2,7 @@
 *.o
 *.exe
 .project
-.class
+*.class
 .settings
 .build
 /Debug/
