@@ -191,13 +191,13 @@ public class Circuit {
 				
 				// if a test passes, should we minimize the fitness score?
 				
-				// debug output
-				//String s = "Output\tGate\n";
-				//for(int i = gates.size() - 1; i >= 0; i--){
-				//	s += testResults.get(i) + "\t" + gates.get( i ) + "\n";
-				//}
-				//System.out.println( s );
-				//System.out.println( tt );
+//				// debug output
+//				String s = "Output\tGate\n";
+//				for(int i = gates.size() - 1; i >= 0; i--){
+//					s += testResults.get(i) + "\t" + gates.get( i ) + "\n";
+//				}
+//				System.out.println( s );
+//				System.out.println( tt );
 			}else{
 				return false;
 			}
