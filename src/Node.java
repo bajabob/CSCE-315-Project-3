@@ -6,11 +6,18 @@ public class Node<T> {
 	private T data;
     private Node<T> parent;
     private List<Node<T>> children;
+    private int depth;
     
-    Node(T data){
+    Node(T data, int depth){
     	this.data = data;
+    	this.depth = depth;
     	this.children = new ArrayList<Node<T>>();
     }
+    
+    public int getDepth(){
+    	return depth;
+    }
+    
     
     public void setParent(Node<T> parent){
     	this.parent = parent;
@@ -20,6 +27,10 @@ public class Node<T> {
     	return this.parent;
     }
     
+    /**
+     * get the data stored in this element
+     * @return T
+     */
     public T getData(){
     	return this.data;
     }

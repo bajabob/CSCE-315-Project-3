@@ -50,6 +50,7 @@ public class LogicBase
 		this.output = output;
 	}
 	
+	
 	/**
 	 * Get this gate
 	 * @return LogicBase

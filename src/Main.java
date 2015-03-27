@@ -4,14 +4,14 @@ public class Main {
 
 	public static void main(String[] args) {
 		
-		// generate a new truth table to represent the carry out circuit
-		boolean[] co = {false, false, false, true, false, true, true, true};
-		TruthTable carryOutTable = new TruthTable("Carry-Out", 3, co);
-		
-		System.out.println(carryOutTable);
-		
-		// find a circuit for the carry out truth table
-		CircuitTree.findCircuit(carryOutTable, 20);
+//		// generate a new truth table to represent the carry out circuit
+//		boolean[] co = {false, false, false, true, false, true, true, true};
+//		TruthTable carryOutTable = new TruthTable("Carry-Out", 3, co);
+//		
+//		System.out.println(carryOutTable);
+//		
+//		// find a circuit for the carry out truth table
+//		CircuitTree.findCircuit(carryOutTable);
 		
 		boolean[] s = {false, true, true, false, true, false, false, true};
 		TruthTable sumTable = new TruthTable("Sum", 3, s);
@@ -19,7 +19,7 @@ public class Main {
 		System.out.println(sumTable);
 		
 		// find a circuit for the sum truth table
-		CircuitTree.findCircuit(sumTable, 10);
+		CircuitTree.findCircuit(sumTable);
 		
 	}
 	

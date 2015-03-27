@@ -157,13 +157,9 @@ public class Circuit {
 			return false;
 		}
 		
-		// don't allow circuits with more than two nots
-		if(counterNot > 2){
-			return false;
-		}
+		int pass = 0;
 		
 		ArrayList<Boolean> testResults = new ArrayList<Boolean>();
-		
 		for(int test = 0; test < tt.getRowCount(); test++ ){
 			// clear any old results
 			testResults.clear();
@@ -179,7 +175,7 @@ public class Circuit {
 			{
 				gates.get(i).evaluate(testResults);
 			}
-			
+						
 			/**
 			 * Did the test pass? - then keep going!
 			 * 
@@ -188,23 +184,23 @@ public class Circuit {
 			 *  the truth table
 			 */
 			if(testResults.get(testResults.size()-1) == tt.getOutput(test)){
-				
-				// if a test passes, should we minimize the fitness score?
-				
-//				// debug output
-//				String s = "Output\tGate\n";
-//				for(int i = gates.size() - 1; i >= 0; i--){
-//					s += testResults.get(i) + "\t" + gates.get( i ) + "\n";
-//				}
-//				System.out.println( s );
-//				System.out.println( tt );
+				pass++;
 			}else{
 				return false;
 			}
 		}
-		// test passed, return true
+		// debug output
+		
+		if(pass > 6){
+//			System.out.println("passed: "+pass);
+//			String s = "Output\tGate\n";
+//			for(int i = gates.size() - 1; i >= 0; i--){
+//				s += testResults.get((testResults.size()-1)-i) + "\t" + gates.get( i ) + "\n";
+//			}
+//			System.out.println( s );
+//			System.out.println( tt );
+		}
 		return true;
-
 	}
 	
 	@Override

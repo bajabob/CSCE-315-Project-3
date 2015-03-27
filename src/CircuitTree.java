@@ -22,19 +22,18 @@ public class CircuitTree {
 	 *  a unique circuit. 
 	 *  
 	 * @param totalInputs - the total number of NONE/input gates for the circuit
-	 * @param treeDepth - the total depth of the tree
 	 */
-	public static void findCircuit(TruthTable tt, int treeDepth){
+	public static void findCircuit(TruthTable tt){
 
 		// create the base root of the tree
-		Node<LogicBase> root = new Node(new LogicBase(LogicBase.GATE_NONE, 0, 0));
+		Node<LogicBase> root = new Node(new LogicBase(LogicBase.GATE_NONE, 0, 0), 0);
 		
 		// add any additional NONE gates
 		//  this will create a linear chain of
 		//  nodes. The last none gate is where 
 		//  the tree will be started.
 		for(int i = 0; i < tt.getTableWidth()-1; i++){
-			Node<LogicBase> child = new Node(new LogicBase(LogicBase.GATE_NONE, 0, i+1));
+			Node<LogicBase> child = new Node(new LogicBase(LogicBase.GATE_NONE, 0, i+1), i+1);
 			child.setParent(root);
 			root.addChild(child);
 			root = child;
@@ -47,48 +46,57 @@ public class CircuitTree {
 		Queue<Node<LogicBase>> queue = new LinkedList<Node<LogicBase>>();
 		queue.add(root);
 		
-		for(int i = 0; i < treeDepth; i++ )
+		Random rand = new Random(System.currentTimeMillis());
+		while(!queue.isEmpty())
 		{
-			System.out.println("Searching Tree Level: " + i);
-			for(int j = 0; j < Math.pow( 3, i+1 ); j += 3)
-			{
-				
-				// get the parent of these children we are about to create
-				Node<LogicBase> parent = queue.remove();
-				
-				// for now we are using a set recipe for our circuit
-				//  in the future we may experiment with permutated 
-				//  gate inputs. This just makes the previous two
-				//  outputs these gates inputs
-				Random rand = new Random();
-				int inA = rand.nextInt(tt.getTableWidth() + i);
-				int inB = rand.nextInt(tt.getTableWidth() + i);
-				
-				// output is equal to i+number of GATE_NONE's added
-				//  before constructing the tree
-				Node<LogicBase> and = new Node(new LogicBase(LogicBase.GATE_AND, inA, inB, i+tt.getTableWidth()));
-				Node<LogicBase> or = new Node(new LogicBase(LogicBase.GATE_OR, inA, inB, i+tt.getTableWidth()));
-				Node<LogicBase> not = new Node(new LogicBase(LogicBase.GATE_NOT, inA, i+tt.getTableWidth()));
-				
-				and.setParent(parent);
-				or.setParent(parent);
-				not.setParent(parent);
-				
-				parent.addChild(and);
-				parent.addChild(or);
-				parent.addChild(not);
-				
-				queue.add(and);
-				queue.add(or);
-				queue.add(not);
+			
+			// get the parent of these children we are about to create
+			Node<LogicBase> parent = queue.remove();
+			
+			
+			int newDepth = parent.getDepth() + 1;
+			
+			// for now we are using a set recipe for our circuit
+			//  in the future we may experiment with permutated 
+			//  gate inputs. This just makes the previous two
+			//  outputs these gates inputs
+			int inA = rand.nextInt(newDepth);
+			int inB = rand.nextInt(newDepth);
+			
+			// output is equal to i+number of GATE_NONE's added
+			//  before constructing the tree
+			Node<LogicBase> and = new Node(new LogicBase(LogicBase.GATE_AND, inA, inB, newDepth), newDepth);
+			Node<LogicBase> or = new Node(new LogicBase(LogicBase.GATE_OR, inA, inB, newDepth), newDepth);
+			Node<LogicBase> not = new Node(new LogicBase(LogicBase.GATE_NOT, inA, newDepth), newDepth);
+			
+			and.setParent(parent);
+			or.setParent(parent);
+			not.setParent(parent);
+			
+			parent.addChild(and);
+			parent.addChild(or);
+			parent.addChild(not);
+			
+			Node[] nodes = {and, or, not};
+			for(int gates = 0; gates < nodes.length; gates++){
 				
 				Circuit c = new Circuit();
-				populateCircuit(c, and);
+				populateCircuit(c, nodes[gates]);
 				
+				/**
+				 * Check fitness score of new circuit, if the circuit is deemed
+				 *  unfit, it will not be added to the queue for further processing
+				 */
+				if(c.getFitnessScore() > 20000){
+					continue;
+				}
+				
+				queue.add( nodes[gates] );
+
 				// @todo: here we should test the fitness of the circuit 
 				//  before attempting to evaluating it
 				boolean foundCircuit = c.evaluate(tt);
-				
+
 				if(foundCircuit){
 					System.out.println("Found valid circuit for "+tt.getName()+" saving to disk.");
 					c.save( tt.getName() );

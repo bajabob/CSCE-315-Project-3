@@ -102,6 +102,7 @@ public class TruthTable {
 		String rsp = "TruthTable: " + name + "\n";
 		
 		for(int i = 0; i < inputs.size(); i++){
+			rsp += i +"\t";
 			for(int j = 0; j < inputs.get(0).length; j++){
 				rsp += (inputs.get(i)[j] ? "1 " : "0 ");
 			}
