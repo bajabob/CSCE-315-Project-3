@@ -1,6 +1,5 @@
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.Random;
 
 
 public class CircuitTree {
@@ -46,7 +45,6 @@ public class CircuitTree {
 		Queue<Node<LogicBase>> queue = new LinkedList<Node<LogicBase>>();
 		queue.add(root);
 		
-		Random rand = new Random(System.currentTimeMillis());
 		while(!queue.isEmpty())
 		{
 			
@@ -60,8 +58,8 @@ public class CircuitTree {
 			//  in the future we may experiment with permutated 
 			//  gate inputs. This just makes the previous two
 			//  outputs these gates inputs
-			int inA = rand.nextInt(newDepth);
-			int inB = rand.nextInt(newDepth);
+			int inA = newDepth - 2;
+			int inB = newDepth - 1;
 			
 			// output is equal to i+number of GATE_NONE's added
 			//  before constructing the tree
@@ -90,9 +88,11 @@ public class CircuitTree {
 				if(c.getFitnessScore() > 20000){
 					continue;
 				}
-				
+
 				queue.add( nodes[gates] );
 
+				c.shuffleInputs( System.currentTimeMillis() );
+				
 				// @todo: here we should test the fitness of the circuit 
 				//  before attempting to evaluating it
 				boolean foundCircuit = c.evaluate(tt);

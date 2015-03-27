@@ -50,6 +50,16 @@ public class LogicBase
 		this.output = output;
 	}
 	
+	/**
+	 * Set the inputs of this gate
+	 * @param inputA int
+	 * @param inputB int
+	 */
+	public void setInputs(int inputA, int inputB){
+		this.inputA = inputA;
+		this.inputB = inputB;
+	}
+	
 	
 	/**
 	 * Get this gate

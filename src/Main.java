@@ -4,22 +4,40 @@ public class Main {
 
 	public static void main(String[] args) {
 		
-//		// generate a new truth table to represent the carry out circuit
-//		boolean[] co = {false, false, false, true, false, true, true, true};
-//		TruthTable carryOutTable = new TruthTable("Carry-Out", 3, co);
+		// Carry-Out Circuit
+		boolean[] co = {false, false, false, true, false, true, true, true};
+		TruthTable carryOutTable = new TruthTable("Carry-Out", 3, co);
+		
+		System.out.println(carryOutTable);
+		CircuitTree.findCircuit(carryOutTable);
+		
+		// Sum Circuit
+//		boolean[] s = {false, true, true, false, true, false, false, true};
+//		TruthTable sumTable = new TruthTable("Sum", 3, s);
 //		
-//		System.out.println(carryOutTable);
-//		
-//		// find a circuit for the carry out truth table
-//		CircuitTree.findCircuit(carryOutTable);
+//		System.out.println(sumTable);
+//		CircuitTree.findCircuit(sumTable);
 		
-		boolean[] s = {false, true, true, false, true, false, false, true};
-		TruthTable sumTable = new TruthTable("Sum", 3, s);
+		// NOT(A) Circuit
+		boolean[] na = {true, true, true, true, false, false, false, false};
+		TruthTable notATable = new TruthTable("NOT-A", 3, na);
 		
-		System.out.println(sumTable);
+		System.out.println(notATable);
+		CircuitTree.findCircuit(notATable);
 		
-		// find a circuit for the sum truth table
-		CircuitTree.findCircuit(sumTable);
+		// NOT(B) Circuit
+		boolean[] nb = {true, true, false, false, true, true, false, false};
+		TruthTable notBTable = new TruthTable("NOT-B", 3, nb);
+		
+		System.out.println(notBTable);
+		CircuitTree.findCircuit(notBTable);
+		
+		// NOT(C) Circuit
+		boolean[] nc = {true, false, true, false, true, false, true, false};
+		TruthTable notCTable = new TruthTable("NOT-C", 3, nc);
+				
+		System.out.println(notCTable);
+		CircuitTree.findCircuit(notCTable);
 		
 	}
 	

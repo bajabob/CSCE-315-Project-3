@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Stack;
 
 public class Circuit {
@@ -143,6 +144,25 @@ public class Circuit {
 	}
 	
 	/**
+	 * Shuffle the inputs of this circuit
+	 */
+	void shuffleInputs(long l){
+		Random rand = new Random(l);
+		
+		for(int i = gates.size()-1; i >= 0 ; i--){
+			if(gates.get( i ).getGate() == LogicBase.GATE_NONE){
+				continue;
+			}
+			int inA = rand.nextInt(gates.get( i ).output);
+			int inB = rand.nextInt(gates.get( i ).output);
+			
+			gates.get( i ).setInputs( inA, inB );
+		}
+	
+	}
+	
+	
+	/**
 	 * Evaluate this circuit based off an array of inputs. The total number of 
 	 *  input should equal the total number of NONE gates at the beginning of 
 	 *  this circuit.
@@ -160,6 +180,9 @@ public class Circuit {
 		int pass = 0;
 		
 		ArrayList<Boolean> testResults = new ArrayList<Boolean>();
+		
+		String out = "";
+		
 		for(int test = 0; test < tt.getRowCount(); test++ ){
 			// clear any old results
 			testResults.clear();
@@ -185,20 +208,23 @@ public class Circuit {
 			 */
 			if(testResults.get(testResults.size()-1) == tt.getOutput(test)){
 				pass++;
+				out += "PASSED\n";
 			}else{
+				out += "FAILED\n";
 				return false;
+			}
+			out += "Output\tGate\n";
+			for(int i = gates.size() - 1; i >= 0; i--){
+				out += testResults.get((testResults.size()-1)-i) + "\t" + gates.get( i ) + "\n";
 			}
 		}
 		// debug output
 		
-		if(pass > 6){
-//			System.out.println("passed: "+pass);
-//			String s = "Output\tGate\n";
-//			for(int i = gates.size() - 1; i >= 0; i--){
-//				s += testResults.get((testResults.size()-1)-i) + "\t" + gates.get( i ) + "\n";
-//			}
-//			System.out.println( s );
-//			System.out.println( tt );
+		if(pass > 5){
+			//System.out.println("passed: "+pass);
+			//System.out.println( out );
+			//System.out.println( tt );
+			//return true;
 		}
 		return true;
 	}
