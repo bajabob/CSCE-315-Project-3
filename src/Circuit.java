@@ -146,7 +146,8 @@ public class Circuit {
 	 * Evaluate this circuit based off an array of inputs. The total number of 
 	 *  input should equal the total number of NONE gates at the beginning of 
 	 *  this circuit.
-	 * @param inputs boolean[]
+	 * @param tt TruthTable
+	 * @return boolean - is this a valid circuit?
 	 */
 	boolean evaluate( TruthTable tt )
 	{
@@ -180,6 +181,8 @@ public class Circuit {
 			}
 			
 			/**
+			 * Did the test pass? - then keep going!
+			 * 
 			 * Did our circuit pass for this row in the truth table?
 			 * Compare test results for this row with the value in 
 			 *  the truth table
@@ -188,21 +191,18 @@ public class Circuit {
 				
 				// if a test passes, should we minimize the fitness score?
 				
-				System.out.println("Test passed for truth table row: "+test);
-				
-				String s = "Output\tGate\n";
-				for(int i = gates.size() - 1; i >= 0; i--){
-					s += testResults.get(i) + "\t" + gates.get( i ) + "\n";
-				}
+				// debug output
+				//String s = "Output\tGate\n";
+				//for(int i = gates.size() - 1; i >= 0; i--){
+				//	s += testResults.get(i) + "\t" + gates.get( i ) + "\n";
+				//}
 				//System.out.println( s );
 				//System.out.println( tt );
 			}else{
 				return false;
 			}
 		}
-		
-		this.save( tt.getName() + "-" + this.hashCode() );
-		
+		// test passed, return true
 		return true;
 
 	}

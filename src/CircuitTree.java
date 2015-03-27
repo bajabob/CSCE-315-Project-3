@@ -4,11 +4,6 @@ import java.util.Random;
 
 
 public class CircuitTree {
-
-	/**
-	 * The root of the tree
-	 */
-	private Node<LogicBase> root;
 	
 	
 	/**
@@ -29,10 +24,10 @@ public class CircuitTree {
 	 * @param totalInputs - the total number of NONE/input gates for the circuit
 	 * @param treeDepth - the total depth of the tree
 	 */
-	public CircuitTree(TruthTable tt, int treeDepth){
+	public static void findCircuit(TruthTable tt, int treeDepth){
 
 		// create the base root of the tree
-		root = new Node(new LogicBase(LogicBase.GATE_NONE, 0, 0));
+		Node<LogicBase> root = new Node(new LogicBase(LogicBase.GATE_NONE, 0, 0));
 		
 		// add any additional NONE gates
 		//  this will create a linear chain of
@@ -54,7 +49,7 @@ public class CircuitTree {
 		
 		for(int i = 0; i < treeDepth; i++ )
 		{
-			System.out.println("Tree Level: " + i);
+			System.out.println("Searching Tree Level: " + i);
 			for(int j = 0; j < Math.pow( 3, i+1 ); j += 3)
 			{
 				
@@ -88,18 +83,18 @@ public class CircuitTree {
 				queue.add(not);
 				
 				Circuit c = new Circuit();
-				this.populateCircuit(c, and);
+				populateCircuit(c, and);
 				
 				// @todo: here we should test the fitness of the circuit 
 				//  before attempting to evaluating it
 				boolean foundCircuit = c.evaluate(tt);
 				
 				if(foundCircuit){
-					System.out.println("Found valid circuit");
+					System.out.println("Found valid circuit for "+tt.getName()+" saving to disk.");
+					c.save( tt.getName() );
 					return;
 				}
 			}
-			System.out.println("");
 		}
 	}
 	
@@ -109,7 +104,7 @@ public class CircuitTree {
 	 * @param c Circuit
 	 * @param node Node<LogicBase>
 	 */
-	private void populateCircuit(Circuit c, Node<LogicBase> node){
+	private static void populateCircuit(Circuit c, Node<LogicBase> node){
 		
 		// visiting tree in reverse order, have to add gates to
 		//  front of gate collection

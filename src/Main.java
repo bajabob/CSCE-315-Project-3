@@ -10,10 +10,17 @@ public class Main {
 		
 		System.out.println(carryOutTable);
 		
-		// create a new circuit tree 
-		CircuitTree ct = new CircuitTree(carryOutTable, 10);
+		// find a circuit for the carry out truth table
+		CircuitTree.findCircuit(carryOutTable, 20);
 		
-		testFileIO();
+		boolean[] s = {false, true, true, false, true, false, false, true};
+		TruthTable sumTable = new TruthTable("Sum", 3, s);
+		
+		System.out.println(sumTable);
+		
+		// find a circuit for the sum truth table
+		CircuitTree.findCircuit(sumTable, 10);
+		
 	}
 	
 	/**
