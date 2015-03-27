@@ -6,10 +6,10 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.Spliterator;
 import java.util.Stack;
 
-public class Circuit {
+public class Circuit
+{
 	
 	/**
 	 * Total number of individual gates in this circuit
@@ -33,7 +33,8 @@ public class Circuit {
 	 * Load a circuit from disk
 	 * @param filename String
 	 */
-	public Circuit(String filename){
+	public Circuit(String filename)
+	{
 		gates = new Stack<LogicBase>();
 		this.load( filename );
 	}
@@ -54,7 +55,8 @@ public class Circuit {
 	 * Increment the local gate count
 	 * @param gate
 	 */
-	private void countGate(LogicBase gate){
+	private void countGate(LogicBase gate)
+	{
 		if(gate.getGate() == LogicBase.GATE_AND)
 		{
 			counterAnd++;
@@ -80,17 +82,17 @@ public class Circuit {
 	 * Get this circuit's current fitness score
 	 * @return int
 	 */
-	int getFitnessScore()
-	{
-		return counterNot * 10000 + 10 * (counterAnd + counterOr);
-		
+	int getFitnessScore(int totalPassedTests, int totalTests)
+	{	
+		return (totalTests-totalPassedTests) * 1000000 + counterNot * 10000 + 10 * (counterAnd + counterOr);
 	}
 	
 	/**
 	 * Save this circuit to disk
 	 * @param filename String
 	 */
-	void save(String filename){
+	void save(String filename)
+	{
 		PrintWriter writer;
 		try
 		{
@@ -109,15 +111,18 @@ public class Circuit {
 	 * Load a circuit from disk
 	 * @param filename String
 	 */
-	void load(String filename){
+	void load(String filename)
+	{
 		BufferedReader br = null;
-		try {
+		try
+		{
 			String currentLine;
  
 			br = new BufferedReader(new FileReader(filename+".txt"));
  
 			ArrayList<LogicBase> list =  new ArrayList<LogicBase>();
-			while ((currentLine = br.readLine()) != null) {
+			while ((currentLine = br.readLine()) != null)
+			{
 				String[] split = currentLine.split("\t");
 				
 				if(split[1].equals("NONE"))
@@ -146,12 +151,14 @@ public class Circuit {
 				}
 			}
  
-			for(int i = list.size() - 1; i >= 0 ; i--){
+			for(int i = list.size() - 1; i >= 0 ; i--)
+			{
 				this.addGateFront( list.get( i ) );
 			}
 			
 			br.close();
-		} catch (IOException e) {
+		} catch (IOException e)
+		{
 			e.printStackTrace();
 		} 
 	}
@@ -172,8 +179,10 @@ public class Circuit {
 	void shuffleInputs(long l){
 		Random rand = new Random(l);
 		
-		for(int i = gates.size()-1; i >= 0 ; i--){
-			if(gates.get( i ).getGate() == LogicBase.GATE_NONE){
+		for(int i = gates.size()-1; i >= 0 ; i--)
+		{
+			if(gates.get( i ).getGate() == LogicBase.GATE_NONE)
+			{
 				continue;
 			}
 			int inA = rand.nextInt(gates.get( i ).output);
@@ -194,7 +203,8 @@ public class Circuit {
 	 */
 	boolean evaluate( TruthTable tt )
 	{
-		if(tt.getTableWidth() != counterNone){
+		if(tt.getTableWidth() != counterNone)
+		{
 			System.err.println("Circuit.evaluate :: Total number of NONE gates in circuit "
 					+ "does not equal number of inputs.");
 			return false;
@@ -206,7 +216,8 @@ public class Circuit {
 		
 		String out = "";
 		
-		for(int test = 0; test < tt.getRowCount(); test++ ){
+		for(int test = 0; test < tt.getRowCount(); test++ )
+		{
 			// clear any old results
 			testResults.clear();
 		
@@ -229,7 +240,8 @@ public class Circuit {
 			 * Compare test results for this row with the value in 
 			 *  the truth table
 			 */
-			if(testResults.get(testResults.size()-1) == tt.getOutput(test)){
+			if(testResults.get(testResults.size()-1) == tt.getOutput(test))
+			{
 				pass++;
 				out += "PASSED\n";
 			}else{
@@ -237,13 +249,15 @@ public class Circuit {
 				return false;
 			}
 			out += "Output\tGate\n";
-			for(int i = gates.size() - 1; i >= 0; i--){
+			for(int i = gates.size() - 1; i >= 0; i--)
+			{
 				out += testResults.get((testResults.size()-1)-i) + "\t" + gates.get( i ) + "\n";
 			}
 		}
 		// debug output
 		
-		if(pass > 5){
+		if(pass > 5)
+		{
 			//System.out.println("passed: "+pass);
 			//System.out.println( out );
 			//System.out.println( tt );
@@ -253,9 +267,11 @@ public class Circuit {
 	}
 	
 	@Override
-	public int hashCode(){
+	public int hashCode()
+	{
+		System.err.println("Finish Fitness for Hash to work correctly!");
 		return this.gates.size() + counterAnd + counterNot + 
-				counterOr + getFitnessScore();
+				counterOr; //+ getFitnessScore();
 	}
 	
 	@Override
@@ -283,7 +299,7 @@ public class Circuit {
 		
 		System.out.println(c);
 		System.out.println(c.hashCode());
-		System.out.println("Testing Fitness: " + c.getFitnessScore());
+		//System.out.println("Testing Fitness: " + c.getFitnessScore());
 		
 		boolean[] expOuts = {false, true, true, false};
 		TruthTable tt = new TruthTable("Carry-Out", 2, expOuts);
@@ -297,8 +313,7 @@ public class Circuit {
 		c.save( "testFileIO" );
 		System.out.println("Saved Circuit:");
 		System.out.println(c);
-				
-		// now attempt to load that same file into a circuit obj
+		
 		Circuit cLoad = new Circuit("testFileIO");
 		System.out.println("Loaded Circuit:");
 		System.out.println(cLoad);
