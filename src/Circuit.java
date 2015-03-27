@@ -6,6 +6,7 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.Spliterator;
 import java.util.Stack;
 
 public class Circuit {
@@ -118,9 +119,31 @@ public class Circuit {
 			ArrayList<LogicBase> list =  new ArrayList<LogicBase>();
 			while ((currentLine = br.readLine()) != null) {
 				String[] split = currentLine.split("\t");
-				LogicBase gate = new LogicBase( split[1], Integer.valueOf( split[2]), 
-						Integer.valueOf(split[3]), Integer.valueOf(split[0]) );
-				list.add( gate );
+				
+				if(split[1].equals("NONE"))
+				{
+					LogicBase gate = new LogicBase(LogicBase.GATE_NONE, Integer.valueOf(split[2]),
+							Integer.valueOf(split[0]));
+					list.add( gate );
+				} else if(split[1].equals("NOT"))
+				{
+					LogicBase gate = new LogicBase(LogicBase.GATE_NOT, Integer.valueOf( split[2]), 
+							Integer.valueOf(split[0]) );
+					list.add( gate );
+				} else if(split[1].equals("AND"))
+				{
+					LogicBase gate = new LogicBase(LogicBase.GATE_AND, Integer.valueOf(split[2]),
+							Integer.valueOf(split[3]), Integer.valueOf(split[0]));
+					list.add( gate );
+				} else if(split[1].equals("OR"))
+				{
+					LogicBase gate = new LogicBase(LogicBase.GATE_OR, Integer.valueOf( split[2]), 
+							Integer.valueOf(split[3]), Integer.valueOf(split[0]) );
+					list.add( gate );
+				} else
+				{
+					System.err.println("Not a gate..");
+				}
 			}
  
 			for(int i = list.size() - 1; i >= 0 ; i--){
@@ -138,7 +161,7 @@ public class Circuit {
 	 * Get the current number of gates in this circuit
 	 * @return int
 	 */
-	int getInputSize()
+	int getGateCount()
 	{
 		return gates.size();
 	}
@@ -245,5 +268,39 @@ public class Circuit {
 		}
 		
 		return response;
+	}
+	
+	public static void main(String[] args)
+	{
+		Circuit c = new Circuit();
+		c.addGateFront(new LogicBase(LogicBase.GATE_OR, 4, 5, 6));
+		c.addGateFront(new LogicBase(LogicBase.GATE_AND, 1, 2, 5));
+		c.addGateFront(new LogicBase(LogicBase.GATE_AND, 0, 3, 4));
+		c.addGateFront(new LogicBase(LogicBase.GATE_NOT, 1, 3));
+		c.addGateFront(new LogicBase(LogicBase.GATE_NOT, 0, 2));
+		c.addGateFront(new LogicBase(LogicBase.GATE_NONE, 1, 1));
+		c.addGateFront(new LogicBase(LogicBase.GATE_NONE, 0, 0));
+		
+		System.out.println(c);
+		System.out.println(c.hashCode());
+		System.out.println("Testing Fitness: " + c.getFitnessScore());
+		
+		boolean[] expOuts = {false, true, true, false};
+		TruthTable tt = new TruthTable("Carry-Out", 2, expOuts);
+		boolean[] badOuts = {true, true, true, false};
+		TruthTable badtt = new TruthTable("Bad", 2, badOuts);
+		
+		System.out.println("Testing evaluate with good tt: " + c.evaluate(tt));
+		System.out.println("Testing evaluate with bad tt: " + c.evaluate(badtt));
+		System.out.println("Testing Get Gate Count: " + c.getGateCount());
+		
+		c.save( "testFileIO" );
+		System.out.println("Saved Circuit:");
+		System.out.println(c);
+				
+		// now attempt to load that same file into a circuit obj
+		Circuit cLoad = new Circuit("testFileIO");
+		System.out.println("Loaded Circuit:");
+		System.out.println(cLoad);
 	}
 }

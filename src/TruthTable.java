@@ -1,7 +1,8 @@
 import java.util.ArrayList;
 import java.util.List;
 
-public class TruthTable {
+public class TruthTable
+{
 
 	/**
 	 * Collection of inputs
@@ -26,7 +27,8 @@ public class TruthTable {
 	 * @param tableWidth int - the number of t/f values for each row
 	 * @param output boolen[] - (ORDER MATTERS) the desired output of the truth table
 	 */
-	public TruthTable(String name, int tableWidth, boolean[] output) {
+	public TruthTable(String name, int tableWidth, boolean[] output)
+	{
 		
 		int rows = (int) Math.pow(2, tableWidth);
 
@@ -58,7 +60,8 @@ public class TruthTable {
 	 * Get the width of this table (the number of inputs)
 	 * @return int
 	 */
-	public int getTableWidth(){
+	public int getTableWidth()
+	{
 		return inputs.get(0).length;
 	}
 	
@@ -68,7 +71,8 @@ public class TruthTable {
 	 * @param column int
 	 * @return boolean
 	 */
-	public boolean getInput(int row, int column){
+	public boolean getInput(int row, int column)
+	{
 		return inputs.get(row)[column];
 	}
 	
@@ -77,7 +81,8 @@ public class TruthTable {
 	 * @param row int
 	 * @return boolean
 	 */
-	public boolean getOutput(int row){
+	public boolean getOutput(int row)
+	{
 		return output.get(row);
 	}
 	
@@ -85,7 +90,8 @@ public class TruthTable {
 	 * Get the total number of rows in this table
 	 * @return int
 	 */
-	public int getRowCount(){
+	public int getRowCount()
+	{
 		return this.output.size();
 	}
 	
@@ -93,12 +99,14 @@ public class TruthTable {
 	 * Get the name of this truth table
 	 * @return String
 	 */
-	public String getName(){
+	public String getName()
+	{
 		return name;
 	}
 	
 	@Override
-	public String toString(){
+	public String toString()
+	{
 		String rsp = "TruthTable: " + name + "\n";
 		
 		for(int i = 0; i < inputs.size(); i++){
@@ -111,4 +119,16 @@ public class TruthTable {
 		return rsp;
 	}
 
+	public static void main(String[] args)
+	{
+		boolean[] expOuts = {false, false, false, true, false, true, true, true};
+		TruthTable tt = new TruthTable("Carry-Out", 3, expOuts);
+		
+		System.out.println(tt);
+		System.out.println("Testing Get Input at (7,1): " + tt.getInput(7, 1));
+		System.out.println("Testing Get Name: " + tt.getName());
+		System.out.println("Testing Get Output at row 7: " + tt.getOutput(7));
+		System.out.println("Testing Get Row Count: " + tt.getRowCount());
+		System.out.println("Testing Get Table Width: " + tt.getTableWidth());
+	}
 }

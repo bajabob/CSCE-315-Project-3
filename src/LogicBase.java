@@ -2,10 +2,10 @@ import java.util.ArrayList;
 
 public class LogicBase
 {
-	public static final String GATE_NONE = "none";
-	public static final String GATE_AND = "and";
-	public static final String GATE_NOT = "not";
-	public static final String GATE_OR = "or";
+	public static final String GATE_NONE = "NONE";
+	public static final String GATE_AND = "AND";
+	public static final String GATE_NOT = "NOT";
+	public static final String GATE_OR = "OR";
 
 	/**
 	 * The type of gate this is
@@ -55,11 +55,11 @@ public class LogicBase
 	 * @param inputA int
 	 * @param inputB int
 	 */
-	public void setInputs(int inputA, int inputB){
+	public void setInputs(int inputA, int inputB)
+	{
 		this.inputA = inputA;
 		this.inputB = inputB;
 	}
-	
 	
 	/**
 	 * Get this gate
@@ -96,7 +96,6 @@ public class LogicBase
 			boolean out = !A;
 			outputs.add(out);
 		}
-
 	}
 	
 	@Override
@@ -106,7 +105,7 @@ public class LogicBase
 			 + gate.toUpperCase() + "\t" + " " +
 			 inputA + " ";
 			
-		if(gate != GATE_NOT)
+		if(gate != GATE_NOT && gate != GATE_NONE)
 		{
 			response += inputB;
 		}
@@ -117,8 +116,35 @@ public class LogicBase
 	 * Convert this gate object to a file formatted friendly string
 	 * @return String
 	 */
-	public String toFileFormat(){
-		return output + "\t" + gate.toUpperCase() + "\t" + inputA + "\t" + inputB;
+	public String toFileFormat()
+	{
+		String toFile = output + "\t" + gate.toUpperCase() + "\t" + inputA;
+		if(this.gate.equals("AND") == true || this.gate.equals("OR") == true)
+		{
+			toFile += "\t" + inputB;
+		}
+		return toFile;
 	}
 
+	public static void main(String[] args){
+		LogicBase NONE = new LogicBase(LogicBase.GATE_NONE, 0, 0);
+		LogicBase NOT = new LogicBase(LogicBase.GATE_NOT, 0, 1);
+		LogicBase AND = new LogicBase(LogicBase.GATE_AND, 0, 1, 2);
+		LogicBase OR = new LogicBase(LogicBase.GATE_OR, 1, 2, 3);
+		
+		System.out.println("NONE: " + NONE);
+		System.out.println("NOT: " + NOT);
+		System.out.println("AND: " + AND);
+		System.out.println("OR: " + OR);
+		
+		System.out.println("Testing Get Gate: " + NONE.getGate());
+		OR.setInputs(0, 1);
+		System.out.println("Testing Set Inputs: " + OR);
+		ArrayList<Boolean> outputs = new ArrayList<Boolean>();
+		outputs.add(true);
+		outputs.add(false);
+		AND.evaluate(outputs);
+		System.out.println(outputs);
+		
+	}
 }
