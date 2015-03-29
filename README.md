@@ -3,6 +3,10 @@ Here is a screenshot of our search algorithm GUI. Each search implementaion runs
 
 ![Search GUI](https://github.tamu.edu/bobtimm/CSCE-315-Project-3/raw/master/docs/images/search-algorithm-gui.png)
 
+## Run & Compile
+* If you are running this application on a remote server, you must enable X11 forwarding.
+* Checkout this project using Git, `git clone <repo-name>`
+
 
 ## Team #7
 * Rafa Moreno - ralphie9224@email.tamu.edu
