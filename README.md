@@ -6,6 +6,9 @@ Here is a screenshot of our search algorithm GUI. Each search implementaion runs
 ## Run & Compile
 * If you are running this application on a remote server, you must enable X11 forwarding.
 * Checkout this project using Git, `git clone <repo-name>`
+* Change directories into project then source folder, `cd <repo-name>`, `cd src/`
+* Compile the application, `make`
+* Run the application, `java Main`
 
 
 ## Team #7
