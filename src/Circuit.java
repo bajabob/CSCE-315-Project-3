@@ -78,13 +78,14 @@ public class Circuit
 		}
 	}
 	
+	
 	/**
 	 * Get this circuit's current fitness score
 	 * @return int
 	 */
-	int getFitnessScore(int totalPassedTests, int totalTests)
+	int getFitnessScore()
 	{	
-		return (totalTests-totalPassedTests) * 1000000 + counterNot * 10000 + 10 * (counterAnd + counterOr);
+		return counterNot * 10000 + 10 * (counterAnd + counterOr);
 	}
 	
 	/**
@@ -173,6 +174,7 @@ public class Circuit
 		return gates.size();
 	}
 	
+	
 	/**
 	 * Shuffle the inputs of this circuit
 	 */
@@ -201,20 +203,19 @@ public class Circuit
 	 * @param tt TruthTable
 	 * @return boolean - is this a valid circuit?
 	 */
-	boolean evaluate( TruthTable tt )
+	int evaluate( TruthTable tt )
 	{
 		if(tt.getTableWidth() != counterNone)
 		{
 			System.err.println("Circuit.evaluate :: Total number of NONE gates in circuit "
 					+ "does not equal number of inputs.");
-			return false;
+			System.err.println(this);
+			return 0;
 		}
 		
 		int pass = 0;
 		
 		ArrayList<Boolean> testResults = new ArrayList<Boolean>();
-		
-		String out = "";
 		
 		for(int test = 0; test < tt.getRowCount(); test++ )
 		{
@@ -243,35 +244,16 @@ public class Circuit
 			if(testResults.get(testResults.size()-1) == tt.getOutput(test))
 			{
 				pass++;
-				out += "PASSED\n";
-			}else{
-				out += "FAILED\n";
-				return false;
-			}
-			out += "Output\tGate\n";
-			for(int i = gates.size() - 1; i >= 0; i--)
-			{
-				out += testResults.get((testResults.size()-1)-i) + "\t" + gates.get( i ) + "\n";
 			}
 		}
-		// debug output
-		
-		if(pass > 5)
-		{
-			//System.out.println("passed: "+pass);
-			//System.out.println( out );
-			//System.out.println( tt );
-			//return true;
-		}
-		return true;
+		return pass;
 	}
 	
 	@Override
 	public int hashCode()
 	{
-		System.err.println("Finish Fitness for Hash to work correctly!");
 		return this.gates.size() + counterAnd + counterNot + 
-				counterOr; //+ getFitnessScore();
+				counterOr + getFitnessScore();
 	}
 	
 	@Override

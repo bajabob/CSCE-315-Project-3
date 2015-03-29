@@ -4,6 +4,64 @@ import java.util.Queue;
 
 public class CircuitTree {
 	
+	/**
+	 * The total number of solutions found by this instance
+	 */
+	private int totalSolutionsFound;
+	
+	/**
+	 * The current depth of the algorithm (in the tree)
+	 */
+	private int currentTreeDepth;
+	
+	/**
+	 * total nodes analyzed
+	 */
+	private long totalNodesAnalyzed;
+	
+	/**
+	 * Is this search implementation running?
+	 */
+	private boolean isRunning;
+	
+	
+	public CircuitTree(){
+		totalSolutionsFound = 0;
+		currentTreeDepth = 0;
+		totalNodesAnalyzed = 0;
+	}
+	
+	/**
+	 * Get the total number of solutions this instance has found
+	 * @return int
+	 */
+	public int getTotalSolutionsFoundCount(){
+		return totalSolutionsFound;
+	}
+	
+	/***
+	 * get the current tree depth
+	 * @return int
+	 */
+	public int getCurrentTreeDepth(){
+		return currentTreeDepth;
+	}
+	
+	/**
+	 * get the total number of nodes analyzed
+	 * @return long
+	 */
+	public long getTotalNodesAnalyzed(){
+		return totalNodesAnalyzed;
+	}
+	
+	/**
+	 * toggle isRunning
+	 */
+	public boolean toggleRunning(){
+		isRunning = !isRunning;
+		return isRunning;
+	}
 	
 	/**
 	 * Create a new circuit tree that starts with NONE gates
@@ -22,8 +80,10 @@ public class CircuitTree {
 	 *  
 	 * @param totalInputs - the total number of NONE/input gates for the circuit
 	 */
-	public static void findCircuit(TruthTable tt){
+	public void findCircuit(TruthTable tt){
 
+		isRunning = false;
+		
 		// create the base root of the tree
 		Node<LogicBase> root = new Node(new LogicBase(LogicBase.GATE_NONE, 0, 0), 0);
 		
@@ -47,12 +107,18 @@ public class CircuitTree {
 		
 		while(!queue.isEmpty())
 		{
+			System.out.print( "" );
+			if(!isRunning){
+				continue;
+			}
 			
 			// get the parent of these children we are about to create
 			Node<LogicBase> parent = queue.remove();
 			
 			
 			int newDepth = parent.getDepth() + 1;
+			
+			currentTreeDepth = newDepth;
 			
 			// for now we are using a set recipe for our circuit
 			//  in the future we may experiment with permutated 
@@ -95,12 +161,13 @@ public class CircuitTree {
 				
 				// @todo: here we should test the fitness of the circuit 
 				//  before attempting to evaluating it
-				boolean foundCircuit = c.evaluate(tt);
+				int passedTests = c.evaluate(tt);
+				
+				totalNodesAnalyzed += c.getGateCount();
 
-				if(foundCircuit){
-					System.out.println("Found valid circuit for "+tt.getName()+" saving to disk.");
-					c.save( tt.getName() );
-					return;
+				if(passedTests == tt.getRowCount()){
+					c.save( tt.getName()+"-"+c.hashCode() );
+					totalSolutionsFound++;
 				}
 			}
 		}
@@ -112,7 +179,7 @@ public class CircuitTree {
 	 * @param c Circuit
 	 * @param node Node<LogicBase>
 	 */
-	private static void populateCircuit(Circuit c, Node<LogicBase> node){
+	private void populateCircuit(Circuit c, Node<LogicBase> node){
 		
 		// visiting tree in reverse order, have to add gates to
 		//  front of gate collection
