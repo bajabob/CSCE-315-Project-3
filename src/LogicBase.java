@@ -62,6 +62,15 @@ public class LogicBase
 	}
 	
 	/**
+	 * Set the inputs of this gate
+	 * @param inputA int
+	 */
+	public void setInput(int inputA)
+	{
+		this.inputA = inputA;
+	}
+	
+	/**
 	 * Get this gate
 	 * @return LogicBase
 	 */

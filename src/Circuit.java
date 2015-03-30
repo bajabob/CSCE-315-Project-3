@@ -189,10 +189,15 @@ public class Circuit
 			}
 			int inA = rand.nextInt(gates.get( i ).output);
 			int inB = rand.nextInt(gates.get( i ).output);
-			
-			gates.get( i ).setInputs( inA, inB );
+			LogicBase gate = gates.get(i);
+			if(gate.getGate() == LogicBase.GATE_AND || gate.getGate() == LogicBase.GATE_OR)
+			{
+				gates.get( i ).setInputs( inA, inB );
+			}else if(gate.getGate() == LogicBase.GATE_NOT)
+			{
+				gates.get( i ).setInput( inA );
+			}
 		}
-	
 	}
 	
 	
