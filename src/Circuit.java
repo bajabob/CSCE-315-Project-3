@@ -264,7 +264,43 @@ public class Circuit
 	
 	public void trim()
 	{
+		int[] usedGates = new int[this.gates.size()];
+		int size = this.gates.size() - 1;
 		
+		LogicBase gate = this.gates.get(0);
+		usedGates[0] = 1;
+		System.out.println(gate.getInputA());
+		usedGates[size - gate.getInputA()] = 1;
+		if(gate.getGate() == LogicBase.GATE_AND || gate.getGate() == LogicBase.GATE_OR)
+		{
+			usedGates[size - gate.getInputB()] = 1;
+		}
+		
+		int counter = 1;
+		while(counter < (this.gates.size()-this.counterNone))
+		{
+			if(usedGates[counter] == 0)
+			{
+				counter++;
+			}else
+			{
+				gate = this.gates.get(counter);
+				usedGates[size - gate.getInputA()] = 1;
+				if(gate.getGate() == LogicBase.GATE_AND || gate.getGate() == LogicBase.GATE_OR)
+				{
+					usedGates[size - gate.getInputB()] = 1;
+				}
+				counter++;
+			}
+		}
+		
+		for(int i = size - this.counterNone; i > -1; i--)
+		{
+			if(usedGates[i] == 0)
+			{
+				this.gates.removeElementAt(i);
+			}
+		}
 	}
 	
 	@Override
@@ -317,5 +353,12 @@ public class Circuit
 		Circuit cLoad = new Circuit("testFileIO");
 		System.out.println("Loaded Circuit:");
 		System.out.println(cLoad);
+		
+		Circuit toTrim = new Circuit();
+		toTrim.load("Carry-Out-171");
+		System.out.println(toTrim);
+		
+		toTrim.trim();
+		System.out.println(toTrim);
 	}
 }

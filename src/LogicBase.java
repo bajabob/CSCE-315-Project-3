@@ -51,6 +51,33 @@ public class LogicBase
 	}
 	
 	/**
+	 * Get the output
+	 * @return int
+	 */
+	public int getOutput()
+	{
+		return this.output;
+	}
+	
+	/**
+	 * Get inputA
+	 * @return int
+	 */
+	public int getInputA()
+	{
+		return this.inputA;
+	}
+	
+	/**
+	 * Get inputB
+	 * @return int
+	 */
+	public int getInputB()
+	{
+		return this.inputB;
+	}
+	
+	/**
 	 * Set the inputs of this gate
 	 * @param inputA int
 	 * @param inputB int
