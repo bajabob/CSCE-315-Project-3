@@ -268,6 +268,14 @@ public class Circuit
 		return response;
 	}
 	
+	public void splice(Circuit c)
+	{
+		for(int i = 0; i < c.gates.size(); i++)
+		{
+			this.addGateFront(c.gates.pop());
+		}
+	}
+	
 	public static void main(String[] args)
 	{
 		Circuit c = new Circuit();
