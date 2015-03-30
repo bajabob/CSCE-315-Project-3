@@ -7,9 +7,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-
-
-public class Main {
+public class Main
+{
 
 	/**
 	 * Collection of circuit finding threads
@@ -17,7 +16,8 @@ public class Main {
 	static ArrayList<CircuitTreeRunnable> runnables;
 	
 	
-	public static void main(String[] args) {
+	public static void main(String[] args)
+	{
 		
 		runnables = new ArrayList<CircuitTreeRunnable>();
 		
@@ -67,12 +67,14 @@ public class Main {
 		panes.setLayout( new BoxLayout(panes, BoxLayout.Y_AXIS) );
 		
 		// add sub-panes to this window
-		for( CircuitTreeRunnable runnable :  runnables){
+		for( CircuitTreeRunnable runnable :  runnables)
+		{
 			panes.add( runnable );
 		}
 		
 		// start processing
-		for( CircuitTreeRunnable runnable :  runnables){
+		for( CircuitTreeRunnable runnable :  runnables)
+		{
 			(new Thread(runnable)).start();
 		}
 		
@@ -88,7 +90,8 @@ public class Main {
 		{
 			public void actionPerformed( ActionEvent evt )
 			{
-				for( CircuitTreeRunnable runnable :  runnables){
+				for( CircuitTreeRunnable runnable :  runnables)
+				{
 					runnable.onUpdateGUI();
 				}
 			}

@@ -2,7 +2,8 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 
-public class CircuitTree {
+public class CircuitTree
+{
 	
 	/**
 	 * The total number of solutions found by this instance
@@ -25,7 +26,8 @@ public class CircuitTree {
 	private boolean isRunning;
 	
 	
-	public CircuitTree(){
+	public CircuitTree()
+	{
 		totalSolutionsFound = 0;
 		currentTreeDepth = 0;
 		totalNodesAnalyzed = 0;
@@ -35,7 +37,8 @@ public class CircuitTree {
 	 * Get the total number of solutions this instance has found
 	 * @return int
 	 */
-	public int getTotalSolutionsFoundCount(){
+	public int getTotalSolutionsFoundCount()
+	{
 		return totalSolutionsFound;
 	}
 	
@@ -43,7 +46,8 @@ public class CircuitTree {
 	 * get the current tree depth
 	 * @return int
 	 */
-	public int getCurrentTreeDepth(){
+	public int getCurrentTreeDepth()
+	{
 		return currentTreeDepth;
 	}
 	
@@ -51,14 +55,16 @@ public class CircuitTree {
 	 * get the total number of nodes analyzed
 	 * @return long
 	 */
-	public long getTotalNodesAnalyzed(){
+	public long getTotalNodesAnalyzed()
+	{
 		return totalNodesAnalyzed;
 	}
 	
 	/**
 	 * toggle isRunning
 	 */
-	public boolean toggleRunning(){
+	public boolean toggleRunning()
+	{
 		isRunning = !isRunning;
 		return isRunning;
 	}
@@ -80,7 +86,8 @@ public class CircuitTree {
 	 *  
 	 * @param totalInputs - the total number of NONE/input gates for the circuit
 	 */
-	public void findCircuit(TruthTable tt){
+	public void findCircuit(TruthTable tt)
+	{
 
 		isRunning = false;
 		
@@ -91,7 +98,8 @@ public class CircuitTree {
 		//  this will create a linear chain of
 		//  nodes. The last none gate is where 
 		//  the tree will be started.
-		for(int i = 0; i < tt.getTableWidth()-1; i++){
+		for(int i = 0; i < tt.getTableWidth()-1; i++)
+		{
 			Node<LogicBase> child = new Node(new LogicBase(LogicBase.GATE_NONE, 0, i+1), i+1);
 			child.setParent(root);
 			root.addChild(child);
@@ -142,7 +150,8 @@ public class CircuitTree {
 			parent.addChild(not);
 			
 			Node[] nodes = {and, or, not};
-			for(int gates = 0; gates < nodes.length; gates++){
+			for(int gates = 0; gates < nodes.length; gates++)
+			{
 				
 				Circuit c = new Circuit();
 				populateCircuit(c, nodes[gates]);
@@ -151,7 +160,8 @@ public class CircuitTree {
 				 * Check fitness score of new circuit, if the circuit is deemed
 				 *  unfit, it will not be added to the queue for further processing
 				 */
-				if(c.getFitnessScore() > 20000){
+				if(c.getFitnessScore() > 20000)
+				{
 					continue;
 				}
 
@@ -165,7 +175,8 @@ public class CircuitTree {
 				
 				totalNodesAnalyzed += c.getGateCount();
 
-				if(passedTests == tt.getRowCount()){
+				if(passedTests == tt.getRowCount())
+				{
 					c.save( tt.getName()+"-"+c.hashCode() );
 					totalSolutionsFound++;
 				}
@@ -179,7 +190,8 @@ public class CircuitTree {
 	 * @param c Circuit
 	 * @param node Node<LogicBase>
 	 */
-	private void populateCircuit(Circuit c, Node<LogicBase> node){
+	private void populateCircuit(Circuit c, Node<LogicBase> node)
+	{
 		
 		// visiting tree in reverse order, have to add gates to
 		//  front of gate collection
@@ -189,6 +201,4 @@ public class CircuitTree {
 			populateCircuit(c, node.getParent());
 		}
 	}
-	
-	
 }

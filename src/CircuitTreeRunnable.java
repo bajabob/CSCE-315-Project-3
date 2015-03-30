@@ -39,7 +39,8 @@ public class CircuitTreeRunnable extends JPanel implements Runnable
 	protected JButton startStopButton;
 	
 	
-	public CircuitTreeRunnable( TruthTable tableToFind){
+	public CircuitTreeRunnable( TruthTable tableToFind)
+	{
 		super();
 		
 		this.tableToFind = tableToFind;
@@ -67,7 +68,8 @@ public class CircuitTreeRunnable extends JPanel implements Runnable
 		
 		// add start/stop button
 		startStopButton = new JButton("Start");
-		startStopButton.addActionListener( new ActionListener(){
+		startStopButton.addActionListener( new ActionListener()
+		{
 			public void actionPerformed( ActionEvent e )
 			{
 				if(searchAlgorithm.toggleRunning()){
@@ -88,14 +90,16 @@ public class CircuitTreeRunnable extends JPanel implements Runnable
 	/**
 	 * thread entry
 	 */
-	public void run() {
+	public void run()
+	{
 		searchAlgorithm.findCircuit(tableToFind);
     }
 	
 	/**
 	 * Called when the GUI wants the stats updated
 	 */
-	public void onUpdateGUI(){
+	public void onUpdateGUI()
+	{
 		solutions.setText( "Found Solutions: "+searchAlgorithm.getTotalSolutionsFoundCount() );
 		treeDepth.setText( "Tree Depth: "+searchAlgorithm.getCurrentTreeDepth() );
 		nodesAnalyzed.setText( "Nodes Analyzed: "+searchAlgorithm.getTotalNodesAnalyzed());
