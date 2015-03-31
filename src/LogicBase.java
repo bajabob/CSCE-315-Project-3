@@ -1,4 +1,6 @@
+import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class LogicBase
 {
@@ -21,6 +23,11 @@ public class LogicBase
 	 * The line this gate outputs to
 	 */
 	protected int output;
+	
+	/**
+	 * The color of this gate
+	 */
+	protected Color color;
 	
 	/**
 	 * Create a new logic base gate
@@ -49,6 +56,39 @@ public class LogicBase
 		this.inputA = inputA;
 		this.output = output;
 	}
+	
+	/**
+	 * Create new RANDOM gate with a specified color
+	 * @param output int - the output line of this gate
+	 * @param color Color
+	 */
+	public LogicBase(int output, Color color){
+		String gates[] = {GATE_AND, GATE_OR, GATE_NOT};
+		Random r = new Random(output+color.hashCode());
+		
+		this.gate = gates[r.nextInt(gates.length)];
+		this.inputA = r.nextInt(output);
+		this.inputB = r.nextInt(output);
+		this.output = output;
+		this.color = color;
+	}
+	
+	/**
+	 * get the color of this gate
+	 * @return Color
+	 */
+	public Color getColor(){
+		return this.color;
+	}
+	
+	/**
+	 * Set the color of this gate
+	 * @param color Color
+	 */
+	public void setColor(Color color){
+		this.color = color;
+	}
+	
 	
 	/**
 	 * Get the output
@@ -144,6 +184,9 @@ public class LogicBase
 		if(gate != GATE_NOT && gate != GATE_NONE)
 		{
 			response += inputB;
+		}
+		if(color != null){
+			response += "\t" + color;
 		}
 		return response;
 	}

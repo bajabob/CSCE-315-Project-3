@@ -20,6 +20,11 @@ public class Circuit
 	private int counterNone;
 	
 	/**
+	 * the total number of "failed" tests from the last evaluation
+	 */
+	private int totalFailedTests = -1;
+	
+	/**
 	 * Collection of gates in linear order
 	 */
 	private Stack<LogicBase> gates;
@@ -85,7 +90,11 @@ public class Circuit
 	 */
 	int getFitnessScore()
 	{	
-		return counterNot * 10000 + 10 * (counterAnd + counterOr);
+		if(totalFailedTests != -1)
+		{
+			return (totalFailedTests * 1000000) + (counterNot * 10000) + 10 * (counterAnd + counterOr);
+		}
+		return (counterNot * 10000) + 10 * (counterAnd + counterOr);
 	}
 	
 	/**
@@ -251,6 +260,10 @@ public class Circuit
 				pass++;
 			}
 		}
+		
+		// calculate the total number of failed tests
+		totalFailedTests = tt.getRowCount() - pass;
+		
 		return pass;
 	}
 	
@@ -314,6 +327,7 @@ public class Circuit
 	public String toString()
 	{
 		String response = "";
+		response += "Fitness: " + getFitnessScore() + "\n";
 		for(int i = gates.size() - 1; i >= 0; i--)
 		{
 			response += gates.get(i) + "\n";

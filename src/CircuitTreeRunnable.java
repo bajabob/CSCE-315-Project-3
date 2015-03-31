@@ -52,7 +52,7 @@ public class CircuitTreeRunnable extends JPanel implements Runnable
 		// add the name of the circuit we are searching for
 		Font font = this.getFont();
 		Font boldFont = new Font(font.getFontName(), Font.BOLD, font.getSize()+2);
-		JLabel name = new JLabel(tableToFind.getName());
+		final JLabel name = new JLabel(tableToFind.getName());
 		name.setForeground( Color.RED );
 		name.setFont( boldFont );
 		this.add( name );
