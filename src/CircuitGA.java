@@ -1,6 +1,7 @@
 import java.util.*;
 import java.lang.*;
 import java.awt.Color;
+import java.awt.Graphics;
 import java.io.*;
 
 public class CircuitGA{
@@ -31,9 +32,10 @@ public class CircuitGA{
 
 			// pick a random color
 			Random rand = new Random();
-			float r = rand.nextFloat();
-			float g = rand.nextFloat();
-			float b = rand.nextFloat();
+			// add 16 = 256 (to avoid black colors)
+			int r = rand.nextInt(224) + 32;
+			int g = rand.nextInt(224) + 32;
+			int b = rand.nextInt(224) + 32;
 			Color randomColor = new Color(r, g, b);
 			
 			// pick a random number of gates
@@ -93,6 +95,25 @@ public class CircuitGA{
 			s += circuits.poll();
 		}
 		return s;
+	}
+	
+	/**
+	 * Paint the pool to a graphics layer
+	 * @param g Graphics
+	 */
+	public void onPaint(Graphics g, int centerY){
+		g.translate(0, centerY);
+		
+		PriorityQueue<Circuit> circuits = new PriorityQueue<Circuit>(activeCircuits);
+		for(int i = 0; !circuits.isEmpty(); i++)
+		{
+			Circuit c = circuits.poll();
+			g.translate(4, 0);
+			g.translate(0, -(c.getGateCount()/2));
+			c.onPaint(g);
+			g.translate(0, (c.getGateCount()/2));
+		}
+		
 	}
 	
 	

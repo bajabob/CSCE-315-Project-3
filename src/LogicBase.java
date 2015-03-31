@@ -1,4 +1,5 @@
 import java.awt.Color;
+import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -205,6 +206,16 @@ public class LogicBase
 		return toFile;
 	}
 
+	/**
+	 * Paint this gate to a graphics layer
+	 * @param g Graphics
+	 */
+	public void onPaint(Graphics g, int y){
+		g.setColor(this.color);
+		g.drawLine(0, y, 2, y);
+	}
+	
+	
 	public static void main(String[] args){
 		LogicBase NONE = new LogicBase(LogicBase.GATE_NONE, 0, 0);
 		LogicBase NOT = new LogicBase(LogicBase.GATE_NOT, 0, 1);

@@ -1,3 +1,4 @@
+import java.awt.Graphics;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -272,6 +273,17 @@ public class Circuit
 		for(int i = 0; i < c.gates.size(); i++)
 		{
 			this.addGateFront(c.gates.pop());
+		}
+	}
+	
+	/**
+	 * Paint this circuit to a graphics layer
+	 * @param g Graphics
+	 */
+	public void onPaint(Graphics g){
+		for(int i = gates.size() - 1; i >= 0; i--)
+		{
+			gates.get(i).onPaint(g, i);
 		}
 	}
 	

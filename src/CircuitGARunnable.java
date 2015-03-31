@@ -21,7 +21,7 @@ public class CircuitGARunnable extends JPanel implements Runnable
 {
 	
 	public final static int MAX_HEIGHT = 250;
-	public final static int MAX_WIDTH = 800;
+	public final static int MAX_WIDTH = 1000;
 	
 	/**
 	 * the solution we are searching for
@@ -31,7 +31,7 @@ public class CircuitGARunnable extends JPanel implements Runnable
 	/**
 	 * the algorithm searching for circuits
 	 */
-	private CircuitGA searchAlgorithm;
+	private static CircuitGA searchAlgorithm;
 	
 	/**
 	 * collection of labels that are updated in realtime
@@ -91,7 +91,7 @@ public class CircuitGARunnable extends JPanel implements Runnable
 		 * Create right gate GUI
 		 */
 		gatesDisplay = new GatesDisplay();
-		gatesDisplay.setBounds(0, 0, 600, MAX_HEIGHT);
+		gatesDisplay.setBounds(0, 0, 800, MAX_HEIGHT);
 		
 		/**
 		 * Add to this panel
@@ -126,7 +126,8 @@ public class CircuitGARunnable extends JPanel implements Runnable
 		{
 			super.paintComponent( g );
 			g.setColor( Color.BLACK );
-			g.fillRect( 0, 0, 600, MAX_HEIGHT );
+			g.fillRect( 0, 0, 800, MAX_HEIGHT );
+			searchAlgorithm.onPaint(g, MAX_HEIGHT/2);
 		}
 	}
 	
