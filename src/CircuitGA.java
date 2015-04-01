@@ -1,8 +1,7 @@
-import java.util.*;
-import java.lang.*;
 import java.awt.Color;
 import java.awt.Graphics;
-import java.io.*;
+import java.util.PriorityQueue;
+import java.util.Random;
 
 public class CircuitGA{
 	
@@ -16,6 +15,11 @@ public class CircuitGA{
 	 * viable (highest fitness) floated to front of the list
 	 */
 	private PriorityQueue<Circuit> activeCircuits;
+	
+	/**
+	 * The highest current fitness score in the system
+	 */
+	private int currentHighestFitnessScore;
 
 	/**
 	 * Create a new genetic alorithm
@@ -23,6 +27,8 @@ public class CircuitGA{
 	 */
 	public CircuitGA(TruthTable tt)
 	{
+		currentHighestFitnessScore = 0;
+		
 		activeCircuits = new PriorityQueue<Circuit>(MAX_CIRCUITS, new CircuitComparator());
 		
 		// create MAX_CIRCUITS number of random circuits
@@ -58,11 +64,44 @@ public class CircuitGA{
 			// eval this circuit
 			a.evaluate(tt);
 			
-			activeCircuits.add(a);
+			this.addToPoolByFitness( a );
 		}
 
 	}
-
+	
+	
+	private void addToPoolByFitness(Circuit a){
+		
+		if(activeCircuits.size() < MAX_CIRCUITS)
+		{
+			if(a.getFitnessScore() > currentHighestFitnessScore)
+			{
+				currentHighestFitnessScore = a.getFitnessScore();
+			}
+			activeCircuits.add( a );
+		}else{
+			if(a.getFitnessScore() < currentHighestFitnessScore)
+			{
+				PriorityQueue<Circuit> old = new PriorityQueue<Circuit>(activeCircuits);
+				activeCircuits.clear();
+				currentHighestFitnessScore = 0;
+				while(old.size() > 1)
+			    {
+					Circuit i = old.poll();
+					
+					if(i.getFitnessScore() > currentHighestFitnessScore)
+					{
+						currentHighestFitnessScore = i.getFitnessScore();
+					}
+					activeCircuits.add(i);
+			    }
+				activeCircuits.add(a);
+			}
+		}
+	}
+	
+	
+	
 	/**
 	 * Pick two of the most viable parents and create two offspring
 	 */
@@ -72,13 +111,14 @@ public class CircuitGA{
 		Circuit b = activeCircuits.poll();
 		
 		// splice these two circuits together
-		a.splice(b);
+		Circuit childA = a.splice(b);
+		Circuit childB = b.splice(a);
 		
-		// add parents back to pool
-		activeCircuits.add(a);
-		activeCircuits.add(b);
-		
-		// add new children to pool
+		// attempt to add all circuits back to pool
+		addToPoolByFitness(a);
+		addToPoolByFitness(b);
+		addToPoolByFitness(childA);
+		addToPoolByFitness(childB);
 	}
 	
 	

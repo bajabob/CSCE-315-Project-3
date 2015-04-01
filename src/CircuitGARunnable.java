@@ -1,4 +1,3 @@
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -48,6 +47,11 @@ public class CircuitGARunnable extends JPanel implements Runnable
 	 */
 	protected JButton startStopButton;
 	
+	/**
+	 * Is the GA currnetly running?
+	 */
+	private boolean isRunning;
+	
 	
 	public CircuitGARunnable( TruthTable tableToFind)
 	{
@@ -80,7 +84,14 @@ public class CircuitGARunnable extends JPanel implements Runnable
 		{
 			public void actionPerformed( ActionEvent e )
 			{
-				
+				isRunning = !isRunning;
+				if(isRunning){
+					name.setForeground( Color.GREEN );
+					startStopButton.setText( "Stop" );
+				}else{
+					name.setForeground( Color.RED );
+					startStopButton.setText( "Start" );
+				}
 			}
 		});
 		startStopButton.setMaximumSize(new Dimension(200, 40));
@@ -109,6 +120,14 @@ public class CircuitGARunnable extends JPanel implements Runnable
 	 */
 	public void run()
 	{
+		while(true)
+		{
+			System.out.print("");
+			if(isRunning)
+			{
+				searchAlgorithm.reproduce();
+			}
+		}
     }
 	
 	/**
