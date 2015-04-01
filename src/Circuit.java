@@ -268,12 +268,47 @@ public class Circuit
 		return pass;
 	}
 	
-	public void splice(Circuit c)
+	public Circuit splice(Circuit c)
 	{
-		for(int i = 0; i < c.gates.size(); i++)
+		int size1, size2;
+		if(this.gates.size() % 2 != 0)
 		{
-			this.addGateFront(c.gates.pop());
+			size1 = this.gates.size();
+		} else
+		{
+			size1 = this.gates.size() - 1;
 		}
+		if(c.gates.size() % 2 != 0)
+		{
+			size2 = this.gates.size();
+		} else
+		{
+			size2 = this.gates.size() - 1;
+		}
+		
+		Circuit parent = new Circuit();
+		
+		for(int i = 0; i < size2/2; i++)
+		{
+			parent.addGateFront(c.gates.get(i));
+		}
+		
+		for(int i = 0; i < size1/2; i++)
+		{
+			parent.addGateFront(this.gates.get(i));
+		}
+		
+		for(int i = this.counterNone - 1; i >= 0; i--)
+		{
+			parent.addGateFront(new LogicBase(LogicBase.GATE_NONE, i, i));
+		}
+		
+		for(int i = 0; i < parent.gates.size(); i++)
+		{
+			parent.gates.get(i).setOutput(parent.gates.size() - 1 - i);
+		}
+		
+		return parent;
 	}
 	
 	/**
@@ -359,6 +394,14 @@ public class Circuit
 		c.addGateFront(new LogicBase(LogicBase.GATE_NONE, 1, 1));
 		c.addGateFront(new LogicBase(LogicBase.GATE_NONE, 0, 0));
 		
+		Circuit d = new Circuit();
+		d.addGateFront(new LogicBase(LogicBase.GATE_OR, 1, 2, 5));
+		d.addGateFront(new LogicBase(LogicBase.GATE_NOT, 0, 3, 4));
+		d.addGateFront(new LogicBase(LogicBase.GATE_AND, 1, 3));
+		d.addGateFront(new LogicBase(LogicBase.GATE_OR, 0, 2));
+		d.addGateFront(new LogicBase(LogicBase.GATE_NONE, 1, 1));
+		d.addGateFront(new LogicBase(LogicBase.GATE_NONE, 0, 0));
+		
 		System.out.println(c);
 		System.out.println(c.hashCode());
 		//System.out.println("Testing Fitness: " + c.getFitnessScore());
@@ -386,5 +429,11 @@ public class Circuit
 		
 		toTrim.trim();
 		System.out.println(toTrim);
+		
+		System.out.println(c);
+		System.out.println(d);
+		
+		Circuit cd = c.splice(d);
+		System.out.println(cd);
 	}
 }

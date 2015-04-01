@@ -90,6 +90,14 @@ public class LogicBase
 		this.color = color;
 	}
 	
+	/**
+	 * Get the output
+	 * @param output int
+	 */
+	public void setOutput(int output)
+	{
+		this.output = output;
+	}
 	
 	/**
 	 * Get the output
