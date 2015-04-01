@@ -19,18 +19,13 @@ import javax.swing.JPanel;
 public class CircuitGARunnable extends JPanel implements Runnable
 {
 	
-	public final static int MAX_HEIGHT = 250;
+	public final static int MAX_HEIGHT = 200;
 	public final static int MAX_WIDTH = 1000;
 	
 	/**
 	 * the solution we are searching for
 	 */
 	private TruthTable tableToFind;
-	
-	/**
-	 * the algorithm searching for circuits
-	 */
-	private static CircuitGA searchAlgorithm;
 	
 	/**
 	 * collection of labels that are updated in realtime
@@ -58,7 +53,6 @@ public class CircuitGARunnable extends JPanel implements Runnable
 		super();
 		
 		this.tableToFind = tableToFind;
-		searchAlgorithm = new CircuitGA(tableToFind);
 		
 		/**
 		 * Create left control panel
@@ -101,7 +95,7 @@ public class CircuitGARunnable extends JPanel implements Runnable
 		/**
 		 * Create right gate GUI
 		 */
-		gatesDisplay = new GatesDisplay();
+		gatesDisplay = new GatesDisplay(tableToFind);
 		gatesDisplay.setBounds(0, 0, 800, MAX_HEIGHT);
 		
 		/**
@@ -125,7 +119,7 @@ public class CircuitGARunnable extends JPanel implements Runnable
 			System.out.print("");
 			if(isRunning)
 			{
-				searchAlgorithm.reproduce(tableToFind);
+				gatesDisplay.getCircuitGA().reproduce(tableToFind);
 			}
 		}
     }
@@ -135,12 +129,30 @@ public class CircuitGARunnable extends JPanel implements Runnable
 	 */
 	public void onUpdateGUI()
 	{
-		foundSolutions.setText( "Found Solutions: "+searchAlgorithm.getTotalSolutionsFound());
+		foundSolutions.setText( "Found Solutions: "+gatesDisplay.getCircuitGA().getTotalSolutionsFound());
 		gatesDisplay.repaint();
 	}
 	
 	private static class GatesDisplay extends JPanel
 	{
+		
+		/**
+		 * the algorithm searching for circuits
+		 */
+		private CircuitGA searchAlgorithm;
+		
+		public GatesDisplay(TruthTable tt){
+			searchAlgorithm = new CircuitGA( tt );
+		}
+		
+		/**
+		 * get this instance of CircuitGA
+		 * @return
+		 */
+		public CircuitGA getCircuitGA(){
+			return this.searchAlgorithm;
+		}
+		
 		public void paintComponent( Graphics g )
 		{
 			super.paintComponent( g );
