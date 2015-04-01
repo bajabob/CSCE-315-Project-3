@@ -268,6 +268,10 @@ public class Circuit
 		return pass;
 	}
 	
+	/**
+	 * Get the last half of this circuit
+	 * @return ArrayList<LogicBase>
+	 */
 	public ArrayList<LogicBase> getLastHalf(){
 		ArrayList<LogicBase> half = new ArrayList<LogicBase>(gates);
 		while(half.size() > gates.size()/2)
@@ -277,6 +281,10 @@ public class Circuit
 		return half;
 	}
 	
+	/**
+	 * Get the first half of this circuit
+	 * @return ArrayList<LogicBase>
+	 */
 	public ArrayList<LogicBase> getFirstHalf(){
 		ArrayList<LogicBase> half = new ArrayList<LogicBase>(gates);
 		while(half.size() > gates.size()/2)
@@ -286,6 +294,13 @@ public class Circuit
 		return half;
 	}
 	
+	/**
+	 * Splice the last half of this circuit with the first half of Circuit c
+	 *  and return a new circuit that has been validated for new output lines
+	 *  and shuffled for new input gates
+	 * @param c Circuit
+	 * @return Circuit
+	 */
 	public Circuit splice(Circuit c)
 	{
 		
