@@ -308,6 +308,7 @@ public class Circuit
 			parent.gates.get(i).setOutput(parent.gates.size() - 1 - i);
 		}
 		
+		parent.shuffleInputs( System.currentTimeMillis() );
 		return parent;
 	}
 	
