@@ -5,7 +5,7 @@ JC = javac
 	$(JC) $(JFLAGS) $*.java
 
 CLASSES = \
-	Main.java
+	MainGA.java
 
 default: clean classes
 

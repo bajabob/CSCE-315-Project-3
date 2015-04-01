@@ -107,7 +107,7 @@ public class Circuit
 		PrintWriter writer;
 		try
 		{
-			writer = new PrintWriter(filename+".txt", "UTF-8");
+			writer = new PrintWriter("solutions/"+filename+".txt", "UTF-8");
 			for(int i = gates.size() - 1; i >= 0; --i ) {
 				writer.println(gates.get( i ).toFileFormat());
 			}
@@ -129,7 +129,7 @@ public class Circuit
 		{
 			String currentLine;
  
-			br = new BufferedReader(new FileReader(filename+".txt"));
+			br = new BufferedReader(new FileReader("solutions/"+filename+".txt"));
  
 			ArrayList<LogicBase> list =  new ArrayList<LogicBase>();
 			while ((currentLine = br.readLine()) != null)
@@ -268,43 +268,60 @@ public class Circuit
 		return pass;
 	}
 	
+	public ArrayList<LogicBase> getLastHalf(){
+		ArrayList<LogicBase> half = new ArrayList<LogicBase>(gates);
+		while(half.size() > gates.size()/2)
+		{
+			half.remove( half.size()-1 );
+		}
+		return half;
+	}
+	
+	public ArrayList<LogicBase> getFirstHalf(){
+		ArrayList<LogicBase> half = new ArrayList<LogicBase>(gates);
+		while(half.size() > gates.size()/2)
+		{
+			half.remove( 0 );
+		}
+		return half;
+	}
+	
 	public Circuit splice(Circuit c)
 	{
-		int size1, size2;
-		if(this.gates.size() % 2 != 0)
-		{
-			size1 = this.gates.size();
-		} else
-		{
-			size1 = this.gates.size() - 1;
-		}
-		if(c.gates.size() % 2 != 0)
-		{
-			size2 = this.gates.size();
-		} else
-		{
-			size2 = this.gates.size() - 1;
-		}
 		
-		Circuit parent = new Circuit();
+		// get the last half of gates from this circuit
+		ArrayList<LogicBase> backHalf = this.getLastHalf();
 		
-		for(int i = 0; i < size2/2; i++)
-		{
-			parent.addGateFront(c.gates.get(i));
-		}
+		// get the first half of gates from the other circuit
+		ArrayList<LogicBase> frontHalf = c.getFirstHalf();
 		
-		for(int i = size1/2; i < this.gates.size(); i++)
-		{
-			parent.addGateFront(this.gates.get(i));
+		Circuit a = new Circuit();
+		
+		// the new calculate output size
+		int output = backHalf.size() + frontHalf.size() - 1;
+		
+		/**
+		 * need to recalculate new output lines
+		 * NOTE: "output--" below handles this 
+		 */		
+		// add the back half of gates to new circuit
+		for(int i = 0; i < backHalf.size(); i++){
+			backHalf.get( i ).setOutput( output-- );
+			a.addGateFront( backHalf.get( i ) );
 		}
 		
-		for(int i = 0; i < parent.gates.size(); i++)
-		{
-			parent.gates.get(i).setOutput(parent.gates.size() - 1 - i);
+		// add the front half of gate to new circuit
+		for(int i = 0; i < frontHalf.size(); i++){
+			frontHalf.get( i ).setOutput( output-- );
+			a.addGateFront( frontHalf.get( i ) );
 		}
 		
-		parent.shuffleInputs( System.currentTimeMillis() );
-		return parent;
+		/**
+		 * Required as we have new input gates to select from
+		 */
+		a.shuffleInputs( System.currentTimeMillis() );
+		
+		return a;
 	}
 	
 	/**
@@ -316,6 +333,14 @@ public class Circuit
 		{
 			gates.get(i).onPaint(g, i);
 		}
+	}
+	
+	/**
+	 * Get the total number of failed tests
+	 * @return int
+	 */
+	public int getTotalFailedTests(){
+		return this.totalFailedTests;
 	}
 	
 	public void trim()

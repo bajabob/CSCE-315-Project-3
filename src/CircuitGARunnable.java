@@ -125,7 +125,7 @@ public class CircuitGARunnable extends JPanel implements Runnable
 			System.out.print("");
 			if(isRunning)
 			{
-				searchAlgorithm.reproduce();
+				searchAlgorithm.reproduce(tableToFind);
 			}
 		}
     }
@@ -135,7 +135,7 @@ public class CircuitGARunnable extends JPanel implements Runnable
 	 */
 	public void onUpdateGUI()
 	{
-		foundSolutions.setText( "Found Solutions: 1");
+		foundSolutions.setText( "Found Solutions: "+searchAlgorithm.getTotalSolutionsFound());
 		gatesDisplay.repaint();
 	}
 	

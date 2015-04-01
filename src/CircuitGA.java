@@ -1,6 +1,7 @@
 import java.awt.Color;
 import java.awt.Graphics;
-import java.util.PriorityQueue;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
 
 public class CircuitGA{
@@ -8,28 +9,29 @@ public class CircuitGA{
 	/**
 	 * The max number of gates to keep alive at any time
 	 */
-	public final int MAX_CIRCUITS = 100;
+	public final int MAX_CIRCUITS = 1000;
 	
 	/**
 	 * The collection of active circuits, with the most 
 	 * viable (highest fitness) floated to front of the list
 	 */
-	private PriorityQueue<Circuit> activeCircuits;
+	private ArrayList<Circuit> activeCircuits;
 	
 	/**
-	 * The highest current fitness score in the system
+	 * the total number of solutions found
 	 */
-	private int currentHighestFitnessScore;
-
+	private int totalSolutionsFound;
+	
 	/**
 	 * Create a new genetic alorithm
 	 * @param tt TruthTable
 	 */
 	public CircuitGA(TruthTable tt)
 	{
-		currentHighestFitnessScore = 0;
+	
+		totalSolutionsFound = 0;
 		
-		activeCircuits = new PriorityQueue<Circuit>(MAX_CIRCUITS, new CircuitComparator());
+		activeCircuits = new ArrayList<Circuit>(MAX_CIRCUITS);
 		
 		// create MAX_CIRCUITS number of random circuits
 		for(int i = 0; i < MAX_CIRCUITS; i++)
@@ -44,8 +46,9 @@ public class CircuitGA{
 			int b = rand.nextInt(224) + 32;
 			Color randomColor = new Color(r, g, b);
 			
-			// pick a random number of gates
-			int randTotalGates = 1 + rand.nextInt(9);
+			// pick a random number of gates that is at LEAST double
+			//  the size of the number of inputs (so it splits easier) 
+			int randTotalGates = tt.getTableWidth() * 3 + rand.nextInt(MAX_CIRCUITS);
 			
 			// add some random gates
 			for(int k = 0; k < randTotalGates; k++)
@@ -64,61 +67,80 @@ public class CircuitGA{
 			// eval this circuit
 			a.evaluate(tt);
 			
-			this.addToPoolByFitness( a );
+			// is this gate a solution?
+			if(a.getTotalFailedTests() == 0){
+				totalSolutionsFound++;
+				a.save( tt.getName()+"-"+a.hashCode() );
+			}
+			
+			this.addToPool( a );
 		}
-
-	}
-	
-	
-	private void addToPoolByFitness(Circuit a){
 		
-		if(activeCircuits.size() < MAX_CIRCUITS)
+	}
+	
+	
+	private void addToPool(Circuit a){
+		activeCircuits.add( a );
+		Collections.sort(activeCircuits, new CircuitComparator());
+		
+		while(activeCircuits.size() > MAX_CIRCUITS)
 		{
-			if(a.getFitnessScore() > currentHighestFitnessScore)
-			{
-				currentHighestFitnessScore = a.getFitnessScore();
-			}
-			activeCircuits.add( a );
-		}else{
-			if(a.getFitnessScore() < currentHighestFitnessScore)
-			{
-				PriorityQueue<Circuit> old = new PriorityQueue<Circuit>(activeCircuits);
-				activeCircuits.clear();
-				currentHighestFitnessScore = 0;
-				while(old.size() > 1)
-			    {
-					Circuit i = old.poll();
-					
-					if(i.getFitnessScore() > currentHighestFitnessScore)
-					{
-						currentHighestFitnessScore = i.getFitnessScore();
-					}
-					activeCircuits.add(i);
-			    }
-				activeCircuits.add(a);
-			}
+			activeCircuits.remove( activeCircuits.size()-1 );
 		}
 	}
 	
+	private Circuit pollFront()
+	{
+		Circuit a = activeCircuits.get( 0 );
+		activeCircuits.remove( 0 );
+		return a;
+	}
+	
+	private Circuit pollRandom()
+	{
+		Random r = new Random(System.currentTimeMillis()+activeCircuits.get( MAX_CIRCUITS-2 ).hashCode());
+		int index = r.nextInt( activeCircuits.size() );
+		Circuit a = activeCircuits.get( index );
+		activeCircuits.remove( index );
+		return a;
+	}
 	
 	
 	/**
 	 * Pick two of the most viable parents and create two offspring
 	 */
-	public void reproduce()
+	public void reproduce(TruthTable tt)
 	{
-		Circuit a = activeCircuits.poll();
-		Circuit b = activeCircuits.poll();
+		
+		Circuit a = pollFront();
+		Circuit b = pollRandom();
+		
+		if(a == null || b == null){
+			System.err.println("Error finding circuits");
+		}
 		
 		// splice these two circuits together
 		Circuit childA = a.splice(b);
+		childA.evaluate( tt );
+		// is this gate a solution?
+		if(childA.getTotalFailedTests() == 0){
+			totalSolutionsFound++;
+			childA.save( tt.getName()+"-"+childA.hashCode() );
+		}
+		
 		Circuit childB = b.splice(a);
+		childB.evaluate( tt );
+		if(childB.getTotalFailedTests() == 0){
+			totalSolutionsFound++;
+			childB.save( tt.getName()+"-"+childB.hashCode() );
+		}
 		
 		// attempt to add all circuits back to pool
-		addToPoolByFitness(a);
-		addToPoolByFitness(b);
-		addToPoolByFitness(childA);
-		addToPoolByFitness(childB);
+		addToPool(a);
+		addToPool(b);
+		addToPool(childA);
+		addToPool(childB);
+		
 	}
 	
 	
@@ -128,11 +150,10 @@ public class CircuitGA{
 	public String toString()
 	{
 		String s = "Ordered set of circuits (based on fitness):\n";
-		PriorityQueue<Circuit> circuits = new PriorityQueue<Circuit>(activeCircuits);
-		for(int i = 0; !circuits.isEmpty(); i++)
+		for(int i = 0; i < activeCircuits.size(); i++)
 		{
 			s += (i+1) + ") ------------\n";
-			s += circuits.poll();
+			s += activeCircuits.get(i);
 		}
 		return s;
 	}
@@ -144,10 +165,9 @@ public class CircuitGA{
 	public void onPaint(Graphics g, int centerY){
 		g.translate(0, centerY);
 		
-		PriorityQueue<Circuit> circuits = new PriorityQueue<Circuit>(activeCircuits);
-		for(int i = 0; !circuits.isEmpty(); i++)
+		for(int i = 0; i < activeCircuits.size(); i++)
 		{
-			Circuit c = circuits.poll();
+			Circuit c = activeCircuits.get(i);
 			g.translate(4, 0);
 			g.translate(0, -(c.getGateCount()/2));
 			c.onPaint(g);
@@ -156,7 +176,13 @@ public class CircuitGA{
 		
 	}
 	
-	
+	/**
+	 * get the total number of solutions found
+	 * @return int
+	 */
+	public int getTotalSolutionsFound(){
+		return this.totalSolutionsFound;
+	}
 
 	public static void main(String[] args)
 	{
