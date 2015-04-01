@@ -293,14 +293,9 @@ public class Circuit
 			parent.addGateFront(c.gates.get(i));
 		}
 		
-		for(int i = 0; i < size1/2; i++)
+		for(int i = size1/2; i < this.gates.size(); i++)
 		{
 			parent.addGateFront(this.gates.get(i));
-		}
-		
-		for(int i = this.counterNone - 1; i >= 0; i--)
-		{
-			parent.addGateFront(new LogicBase(LogicBase.GATE_NONE, i, i));
 		}
 		
 		for(int i = 0; i < parent.gates.size(); i++)
@@ -436,5 +431,8 @@ public class Circuit
 		
 		Circuit cd = c.splice(d);
 		System.out.println(cd);
+		
+		Circuit dc = d.splice(c);
+		System.out.println(dc);
 	}
 }
