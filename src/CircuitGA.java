@@ -48,7 +48,7 @@ public class CircuitGA{
 			
 			// pick a random number of gates that is at LEAST double
 			//  the size of the number of inputs (so it splits easier) 
-			int randTotalGates = tt.getTableWidth() * 3 + rand.nextInt(MAX_CIRCUITS);
+			int randTotalGates = tt.getTableWidth() * 3 + rand.nextInt(1000);
 			
 			// add some random gates
 			for(int k = 0; k < randTotalGates; k++)

@@ -1,3 +1,4 @@
+import java.awt.Color;
 import java.awt.Graphics;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -91,11 +92,17 @@ public class Circuit
 	 */
 	int getFitnessScore()
 	{	
+		int andOr = 0;
+		
+		if(counterAnd > 1000 || counterOr > 1000){
+			andOr = 10 * (counterAnd + counterOr);
+		}
+		
 		if(totalFailedTests != -1)
 		{
-			return (totalFailedTests * 1000000) + (counterNot * 10000) + 10 * (counterAnd + counterOr);
+			return (totalFailedTests * 1000000) + (counterNot * 10000) + andOr;
 		}
-		return (counterNot * 10000) + 10 * (counterAnd + counterOr);
+		return (counterNot * 10000) + andOr;
 	}
 	
 	/**
@@ -274,7 +281,7 @@ public class Circuit
 	 */
 	public ArrayList<LogicBase> getLastHalf(){
 		ArrayList<LogicBase> half = new ArrayList<LogicBase>(gates);
-		while(half.size() > gates.size()/2)
+		while(half.size() > 3+(gates.size()/2))
 		{
 			half.remove( half.size()-1 );
 		}
@@ -287,7 +294,7 @@ public class Circuit
 	 */
 	public ArrayList<LogicBase> getFirstHalf(){
 		ArrayList<LogicBase> half = new ArrayList<LogicBase>(gates);
-		while(half.size() > gates.size()/2)
+		while(half.size() > 3+(gates.size()/2))
 		{
 			half.remove( 0 );
 		}
@@ -344,6 +351,12 @@ public class Circuit
 	 * @param g Graphics
 	 */
 	public void onPaint(Graphics g){
+		if(totalFailedTests == 0){
+			g.setColor( Color.GREEN );
+			g.fillRect( -4, (gates.size()/2) - 4, 8, 8 );
+			g.setColor( Color.WHITE );
+			g.fillRect( -2, (gates.size()/2) - 2, 4, 4 );
+		}
 		for(int i = gates.size() - 1; i >= 0; i--)
 		{
 			gates.get(i).onPaint(g, i);
