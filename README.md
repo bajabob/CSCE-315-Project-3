@@ -5,6 +5,8 @@ Compile this version using `make` and run using `java MainGa`. Here is a screens
 ![GA GUI](https://github.tamu.edu/bobtimm/CSCE-315-Project-3/raw/master/docs/images/ga-pre-run.png)
 
 ### Post-Run
+All circuits with green and white boxes in the center are complete solution circuits. 
+
 ![GA GUI](https://github.tamu.edu/bobtimm/CSCE-315-Project-3/raw/master/docs/images/ga-post-run.png)
 
 ## Screenshot (MainNonGA)
