@@ -20,7 +20,7 @@ public class CircuitTreeRunnable extends JPanel implements Runnable
 	/**
 	 * the solution we are searching for
 	 */
-	private TruthTable tableToFind;
+	private TruthTable[] tableToFind;
 	
 	/**
 	 * the algorithm searching for circuits
@@ -32,6 +32,7 @@ public class CircuitTreeRunnable extends JPanel implements Runnable
 	 */
 	private JLabel solutions, treeDepth, nodesAnalyzed;
 	
+	private String algorithmName;
 	
 	/**
 	 * Start stop button
@@ -39,12 +40,13 @@ public class CircuitTreeRunnable extends JPanel implements Runnable
 	protected JButton startStopButton;
 	
 	
-	public CircuitTreeRunnable( TruthTable tableToFind)
+	public CircuitTreeRunnable( TruthTable[] tableToFind, String algorithmName)
 	{
 		super();
-		
+	
+		this.algorithmName = algorithmName;
 		this.tableToFind = tableToFind;
-		searchAlgorithm = new CircuitTree();
+		this.searchAlgorithm = new CircuitTree();
 		
 		// init this layout 
 		this.setLayout( new BoxLayout(this, BoxLayout.Y_AXIS) );
@@ -52,7 +54,7 @@ public class CircuitTreeRunnable extends JPanel implements Runnable
 		// add the name of the circuit we are searching for
 		Font font = this.getFont();
 		Font boldFont = new Font(font.getFontName(), Font.BOLD, font.getSize()+2);
-		final JLabel name = new JLabel(tableToFind.getName());
+		final JLabel name = new JLabel(algorithmName);
 		name.setForeground( Color.RED );
 		name.setFont( boldFont );
 		this.add( name );
@@ -87,12 +89,13 @@ public class CircuitTreeRunnable extends JPanel implements Runnable
 	}
 	
 	
+	
 	/**
 	 * thread entry
 	 */
 	public void run()
 	{
-		searchAlgorithm.findCircuit(tableToFind);
+		searchAlgorithm.findCircuit(tableToFind, this.algorithmName);
     }
 	
 	/**
@@ -102,7 +105,7 @@ public class CircuitTreeRunnable extends JPanel implements Runnable
 	{
 		solutions.setText( "Found Solutions: "+searchAlgorithm.getTotalSolutionsFoundCount() );
 		treeDepth.setText( "Tree Depth: "+searchAlgorithm.getCurrentTreeDepth() );
-		nodesAnalyzed.setText( "Nodes Analyzed: "+searchAlgorithm.getTotalNodesAnalyzed());
+		nodesAnalyzed.setText( "Gates Analyzed: "+searchAlgorithm.getTotalNodesAnalyzed());
 	}
 	
 }

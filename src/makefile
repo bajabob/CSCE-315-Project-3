@@ -1,16 +1,19 @@
-JFLAGS = -g
-JC = javac
-.SUFFIXES: .java .class
-.java.class:
-	$(JC) $(JFLAGS) $*.java
+JAVAC = javac
+JVM = java
+JAVADOC = javadoc
+MKBIN = mkdir -p bin
 
-CLASSES = \
-	MainGA.java
+JAVAC_FLAGS = -g
 
-default: clean classes
+MAINSRC = *.java
 
-classes: $(CLASSES:.java=.class)
+.SUFFIXES : .class .java
+
+all: 
+	$(JAVAC) $(JAVAC_FLAGS) $(MAINSRC)
 
 clean:
-	$(RM) *.class
-	$(RM) */*.class
+	rm *.class
+	rm solutions/*.txt
+
+.PHONY: all test clean run run_test

@@ -217,13 +217,34 @@ public class Circuit
 		}
 	}
 	
+	/**
+	 * Evaluate a series of truth tables in an array
+	 * @param tt[] TruthTable
+	 * @return boolean - 
+	 */
+	boolean evaluate(TruthTable[] tt){
+		
+		int totalPasses = 0;
+		for(int i = 0; i < tt.length; i++)
+		{
+			totalPasses += this.evaluate( tt[i] );
+		}
+		
+		totalFailedTests = (tt[0].getRowCount() * tt.length) - totalPasses;
+		
+		if(totalFailedTests == 0){
+			return true;
+		}
+		return false;
+	}
+	
 	
 	/**
 	 * Evaluate this circuit based off an array of inputs. The total number of 
 	 *  input should equal the total number of NONE gates at the beginning of 
 	 *  this circuit.
 	 * @param tt TruthTable
-	 * @return boolean - is this a valid circuit?
+	 * @return int - number of passed tests (out of rows in a truth table)
 	 */
 	int evaluate( TruthTable tt )
 	{
@@ -235,9 +256,15 @@ public class Circuit
 			return 0;
 		}
 		
-		int pass = 0;
-		
 		ArrayList<Boolean> testResults = new ArrayList<Boolean>();
+		
+		int[] passedTests = new int[gates.size()];
+		
+		// init list of outputs (add all gates as valid outputs to be pruned later)
+		for( int i = 0; i < gates.size(); i++ )
+		{
+			passedTests[i] = 0;
+		}
 		
 		for(int test = 0; test < tt.getRowCount(); test++ )
 		{
@@ -255,24 +282,26 @@ public class Circuit
 			{
 				gates.get(i).evaluate(testResults);
 			}
-						
-			/**
-			 * Did the test pass? - then keep going!
-			 * 
-			 * Did our circuit pass for this row in the truth table?
-			 * Compare test results for this row with the value in 
-			 *  the truth table
-			 */
-			if(testResults.get(testResults.size()-1) == tt.getOutput(test))
+			
+			// check for valid output wires
+			for( int i = gates.size()-1; i >= 0; i-- )
 			{
-				pass++;
+				if(testResults.get( i ) == tt.getOutput( test )){
+					passedTests[i]++;
+				}
 			}
 		}
 		
-		// calculate the total number of failed tests
-		totalFailedTests = tt.getRowCount() - pass;
-		
-		return pass;
+		int bestOutput = 0;
+		for( int i = gates.size()-1; i >= 0; i-- )
+		{
+			if(passedTests[i] > passedTests[bestOutput]){
+				bestOutput = i;
+				
+			}
+		}
+		totalFailedTests = tt.getRowCount() - passedTests[bestOutput];
+		return passedTests[bestOutput];
 	}
 	
 	/**
@@ -460,8 +489,8 @@ public class Circuit
 		boolean[] badOuts = {true, true, true, false};
 		TruthTable badtt = new TruthTable("Bad", 2, badOuts);
 		
-		System.out.println("Testing evaluate with good tt: " + c.evaluate(tt));
-		System.out.println("Testing evaluate with bad tt: " + c.evaluate(badtt));
+		//System.out.println("Testing evaluate with good tt: " + c.evaluate(tt));
+		//System.out.println("Testing evaluate with bad tt: " + c.evaluate(badtt));
 		System.out.println("Testing Get Gate Count: " + c.getGateCount());
 		
 		c.save( "testFileIO" );

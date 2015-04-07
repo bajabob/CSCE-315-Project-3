@@ -23,13 +23,20 @@ public class CircuitGA{
 	private int totalSolutionsFound;
 	
 	/**
-	 * Create a new genetic alorithm
+	 * the name of this GA implementation
+	 */
+	private String algorithmName;
+	
+	/**
+	 * Create a new genetic algorithm
 	 * @param tt TruthTable
 	 */
-	public CircuitGA(TruthTable tt)
+	public CircuitGA(TruthTable[] tt, String algorithmName)
 	{
 	
-		totalSolutionsFound = 0;
+		this.algorithmName = algorithmName;
+		
+		this.totalSolutionsFound = 0;
 		
 		activeCircuits = new ArrayList<Circuit>(MAX_CIRCUITS);
 		
@@ -48,29 +55,26 @@ public class CircuitGA{
 			
 			// pick a random number of gates that is at LEAST double
 			//  the size of the number of inputs (so it splits easier) 
-			int randTotalGates = tt.getTableWidth() * 3 + rand.nextInt(1000);
+			int randTotalGates = tt[0].getTableWidth() * 3 + rand.nextInt(1000);
 			
 			// add some random gates
 			for(int k = 0; k < randTotalGates; k++)
 			{
-				a.addGateFront(new LogicBase((randTotalGates-(k+1))+tt.getTableWidth(), randomColor));
+				a.addGateFront(new LogicBase((randTotalGates-(k+1))+tt[0].getTableWidth(), randomColor));
 			}
 
 			// fill the rest of the circuit with NONE gates (amount needed by truth table)
-			for(int k = 0; k < tt.getTableWidth(); k++)
+			for(int k = 0; k < tt[0].getTableWidth(); k++)
 			{
-				LogicBase none = new LogicBase(LogicBase.GATE_NONE, 0, tt.getTableWidth()-(k+1));
+				LogicBase none = new LogicBase(LogicBase.GATE_NONE, 0, tt[0].getTableWidth()-(k+1));
 				none.setColor(randomColor);
 				a.addGateFront(none);
 			}
 			
-			// eval this circuit
-			a.evaluate(tt);
-			
 			// is this gate a solution?
-			if(a.getTotalFailedTests() == 0){
+			if(a.evaluate(tt)){
 				totalSolutionsFound++;
-				a.save( tt.getName()+"-"+a.hashCode() );
+				a.save( this.algorithmName+"-"+a.hashCode() );
 			}
 			
 			this.addToPool( a );
@@ -109,7 +113,7 @@ public class CircuitGA{
 	/**
 	 * Pick two of the most viable parents and create two offspring
 	 */
-	public void reproduce(TruthTable tt)
+	public void reproduce(TruthTable[] tt)
 	{
 		
 		Circuit a = pollFront();
@@ -121,18 +125,17 @@ public class CircuitGA{
 		
 		// splice these two circuits together
 		Circuit childA = a.splice(b);
-		childA.evaluate( tt );
+
 		// is this gate a solution?
-		if(childA.getTotalFailedTests() == 0){
+		if(childA.evaluate( tt )){
 			totalSolutionsFound++;
-			childA.save( tt.getName()+"-"+childA.hashCode() );
+			childA.save( this.algorithmName+"-"+childA.hashCode() );
 		}
 		
 		Circuit childB = b.splice(a);
-		childB.evaluate( tt );
-		if(childB.getTotalFailedTests() == 0){
+		if(childB.evaluate( tt )){
 			totalSolutionsFound++;
-			childB.save( tt.getName()+"-"+childB.hashCode() );
+			childB.save( this.algorithmName+"-"+childB.hashCode() );
 		}
 		
 		// attempt to add all circuits back to pool
@@ -183,20 +186,5 @@ public class CircuitGA{
 	public int getTotalSolutionsFound(){
 		return this.totalSolutionsFound;
 	}
-
-	public static void main(String[] args)
-	{
-		// Carry-Out Circuit
-		boolean[] co = {false, false, false, true, false, true, true, true};
-		TruthTable carryOutTable = new TruthTable("Carry-Out", 3, co);
-		CircuitGA ga = new CircuitGA(carryOutTable);
-
-		// print out the circuits in order of fitness (best first)
-		System.out.println(ga);
-		
-	}
-
-	
-
 
 }

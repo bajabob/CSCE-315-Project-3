@@ -19,13 +19,13 @@ import javax.swing.JPanel;
 public class CircuitGARunnable extends JPanel implements Runnable
 {
 	
-	public final static int MAX_HEIGHT = 200;
+	public final static int MAX_HEIGHT = 500;
 	public final static int MAX_WIDTH = 1000;
 	
 	/**
 	 * the solution we are searching for
 	 */
-	private TruthTable tableToFind;
+	private TruthTable[] tableToFind;
 	
 	/**
 	 * collection of labels that are updated in realtime
@@ -48,7 +48,7 @@ public class CircuitGARunnable extends JPanel implements Runnable
 	private boolean isRunning;
 	
 	
-	public CircuitGARunnable( TruthTable tableToFind)
+	public CircuitGARunnable( TruthTable[] tableToFind, String algorithmName)
 	{
 		super();
 		
@@ -64,7 +64,7 @@ public class CircuitGARunnable extends JPanel implements Runnable
 		// add the name of the circuit we are searching for
 		Font font = this.getFont();
 		Font boldFont = new Font(font.getFontName(), Font.BOLD, font.getSize()+2);
-		final JLabel name = new JLabel(tableToFind.getName());
+		final JLabel name = new JLabel(algorithmName);
 		name.setForeground( Color.RED );
 		name.setFont( boldFont );
 		controlPanel.add( name );
@@ -95,7 +95,7 @@ public class CircuitGARunnable extends JPanel implements Runnable
 		/**
 		 * Create right gate GUI
 		 */
-		gatesDisplay = new GatesDisplay(tableToFind);
+		gatesDisplay = new GatesDisplay(tableToFind, algorithmName);
 		gatesDisplay.setBounds(0, 0, 800, MAX_HEIGHT);
 		
 		/**
@@ -141,8 +141,8 @@ public class CircuitGARunnable extends JPanel implements Runnable
 		 */
 		private CircuitGA searchAlgorithm;
 		
-		public GatesDisplay(TruthTable tt){
-			searchAlgorithm = new CircuitGA( tt );
+		public GatesDisplay(TruthTable[] tt, String algorithmName){
+			searchAlgorithm = new CircuitGA( tt, algorithmName );
 		}
 		
 		/**

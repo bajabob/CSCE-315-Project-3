@@ -1,9 +1,23 @@
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Random;
 
 
 public class CircuitTree
 {
+	
+	/**
+	 * The max number of gates to keep alive at any time
+	 */
+	public final int MAX_CIRCUITS = 1000;
+	
+	/**
+	 * The collection of active circuits, with the most 
+	 * viable (highest fitness) floated to front of the list
+	 */
+	private ArrayList<Circuit> activeCircuits;
 	
 	/**
 	 * The total number of solutions found by this instance
@@ -86,7 +100,7 @@ public class CircuitTree
 	 *  
 	 * @param totalInputs - the total number of NONE/input gates for the circuit
 	 */
-	public void findCircuit(TruthTable tt)
+	public void findCircuit(TruthTable[] tt, String algorithmName)
 	{
 
 		isRunning = false;
@@ -98,7 +112,7 @@ public class CircuitTree
 		//  this will create a linear chain of
 		//  nodes. The last none gate is where 
 		//  the tree will be started.
-		for(int i = 0; i < tt.getTableWidth()-1; i++)
+		for(int i = 0; i < tt[0].getTableWidth()-1; i++)
 		{
 			Node<LogicBase> child = new Node(new LogicBase(LogicBase.GATE_NONE, 0, i+1), i+1);
 			child.setParent(root);
@@ -111,6 +125,7 @@ public class CircuitTree
 		//  add all of its children and then proceed to add the children
 		//  to the end of the queue.
 		Queue<Node<LogicBase>> queue = new LinkedList<Node<LogicBase>>();
+		activeCircuits = new ArrayList<Circuit>(MAX_CIRCUITS);
 		queue.add(root);
 		
 		while(!queue.isEmpty())
@@ -155,33 +170,58 @@ public class CircuitTree
 				
 				Circuit c = new Circuit();
 				populateCircuit(c, nodes[gates]);
-				
-				/**
-				 * Check fitness score of new circuit, if the circuit is deemed
-				 *  unfit, it will not be added to the queue for further processing
-				 */
-				if(c.getFitnessScore() > 20000)
+
+				if(queue.size() < MAX_CIRCUITS*5)
 				{
-					continue;
+					queue.add( nodes[gates] );
 				}
-
-				queue.add( nodes[gates] );
-
+				
 				c.shuffleInputs( System.currentTimeMillis() );
 				
-				// @todo: here we should test the fitness of the circuit 
-				//  before attempting to evaluating it
-				int passedTests = c.evaluate(tt);
+				addToPool( c );
 				
-				totalNodesAnalyzed += c.getGateCount();
-
-				if(passedTests == tt.getRowCount())
-				{
-					c.save( tt.getName()+"-"+c.hashCode() );
+				Circuit random = this.pollRandom();
+				System.out.println(random);
+				if(random.evaluate(tt)){
+					random.save( algorithmName+"-"+random.hashCode() );
 					totalSolutionsFound++;
 				}
+				
+				addToPool( random );
+				
+				totalNodesAnalyzed += random.getGateCount();
+
 			}
 		}
+	}
+	
+	private void addToPool(Circuit a){
+		activeCircuits.add( a );
+		Collections.sort(activeCircuits, new CircuitComparator());
+		
+		while(activeCircuits.size() > MAX_CIRCUITS)
+		{
+			activeCircuits.remove( activeCircuits.size()-1 );
+		}
+	}
+	
+	private Circuit pollFront()
+	{
+		Circuit a = activeCircuits.get( 0 );
+		activeCircuits.remove( 0 );
+		return a;
+	}
+	
+	private Circuit pollRandom()
+	{
+		if(activeCircuits.size() == 0){
+			return new Circuit();
+		}
+		Random r = new Random(System.currentTimeMillis());
+		int index = r.nextInt( activeCircuits.size() );
+		Circuit a = activeCircuits.get( index );
+		activeCircuits.remove( index );
+		return a;
 	}
 	
 	/**
