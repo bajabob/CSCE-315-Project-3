@@ -1,3 +1,8 @@
+## CSCE-315-Project-3 Genetic Circuit Algorithm
+
+### Notes
+This project consists of two search algorithms for constructing circuits that satisfy a given truth table. The first algorithm utilizes a tree where each node is either an AND, OR, NOT gate. This brute force method attempts to construct a circuit using brute force. While the tree is being constructed a pruning algorithm removes unfit gates to prevent the tree from becoming too dense. Pruning of circuits depends on a calculated fitness score. The second algorithm utilizes a priority queue to order circuits by fitness. Each pass of the algorithm picks two parent circuits and splices them together to create two child circuits. Graphically each circuit is represented by a vertical line. Each pixel in the vertical line represents a different gate which is why each circuit varies in size. As circuits are spliced together they inherit new circuits from parent circuits retaining the color of each parent circuit. 
+
 ### Run & Compile
 * There are two GUI's, the NonGA and the GA, `project3_NonGA_GUI` and `project3_GA_GUI` respectively.
 * If you are running this application on a remote server, you must enable X11 forwarding.
@@ -10,7 +15,7 @@
 There are three important elements of the project: LogicBase, Circuit, and CircuitTree. The following sections discuss our design process of these elements.
 
 #### LogicBase
-This class simulates the Logic Gates that are used in the Circuits. All gates are wrapped up into this class for simplification in the Circuit class. Each gate is distiguished by a String: GATE_AND, GATE_OR, GATE_NOT, and GATE_NONE. There can be either one or two inputs (depending on gate), one output, and a Color that is kept so the user can distinguish the origins of the gate. This class also contains an evaluation function which will produce the correct output given all of the inputs for a gate.
+This class simulates the Logic Gates that are used in the Circuits. All gates are wrapped up into this class for simplification in the Circuit class. Each gate is distinguished by a String: GATE_AND, GATE_OR, GATE_NOT, and GATE_NONE. There can be either one or two inputs (depending on gate), one output, and a Color that is kept so the user can distinguish the origins of the gate. This class also contains an evaluation function which will produce the correct output given all of the inputs for a gate.
 
 #### Circuit
 This class is designed using a stack as the container of Logic Gates. It took a good amount of care to make sure that every Logic Gate was accessed in the correct order. There are counters for each type of gate that a Circuit contains because this is where the Fitness is determined. A Circuit's Fitness depends on correctness, number of NOT gates, and the number of AND and OR gates. The NOT gate lead to a much higher Fitness score than other gates because it's ideal to have very few of these gates. There are also useful functions such as Trim, Splice, Load, Save, Evaluate, and ShuffleInputs. The Trim function will traverse the Circuit and determine what gates aren't useful so it can eliminate them. The Splice function splices the top half of one Circuit and the bottom half of another into a child Circuit without altering the two parent Circuits. The Load and Save function will write and read a Circuit from file. Evaluate will call LogicBase's evaluate function for every gate to find the output of the entire Circuit. Finally, the ShuffleInputs randomly generates valid inputs for every Logic Gate.
