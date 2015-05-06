@@ -20,7 +20,7 @@ public class project3_GA_GUI {
 		/**
 		 * Collection of circuit finding threads
 		 */
-		ArrayList<CircuitGARunnable> runnables = new ArrayList<CircuitGARunnable>();
+		final ArrayList<CircuitGARunnable> runnables = new ArrayList<CircuitGARunnable>();
 		
 		// adder circuit
 		boolean[] co = {false, false, false, true, false, true, true, true};

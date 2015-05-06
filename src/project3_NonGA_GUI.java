@@ -17,7 +17,7 @@ public class project3_NonGA_GUI
 		System.out.println("Solutions are stored in src/solutions");
 		System.out.println("=====================================");
 		
-		ArrayList<CircuitTreeRunnable> runnables = new ArrayList<CircuitTreeRunnable>();
+		final ArrayList<CircuitTreeRunnable> runnables = new ArrayList<CircuitTreeRunnable>();
 		
 		/**
 		 * Setup circuits we want to find
