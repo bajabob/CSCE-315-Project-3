@@ -48,6 +48,9 @@ Compile this version using `make` and run using `java project3_NonGA_GUI`. Here 
 * Robert (Bob) Timm
 * Ben Whitley
 
+### Plagiarism Notice
+If you are working on an assignment for a University or High School course you must check with your professor and/or school's guidelines on plagiarism before copying any work found in this codebase. The author of this code is not to be held responsible for acts of cheating or misconduct. The author, much like the creator of a scholastic paper or article has decided to post this codebase for educational purposes. If you are a professor or course admin that is having an issue with cheating in your class, please feel free to contact the author.
+
 ### License
 Copyright (c) 2015 Robert Timm, Rafa Moreno, Ben Whitley
 
